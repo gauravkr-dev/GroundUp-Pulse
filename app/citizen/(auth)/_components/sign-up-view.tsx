@@ -41,10 +41,10 @@ export default function SignUpView() {
                 name: data.name,
                 email: data.email,
                 password: data.password,
+                callbackURL: '/citizen/dashboard'
             },
             {
                 onSuccess: () => {
-                    router.push('/dashboard');
                     toast.success('Account created successfully!');
                     setPending(false);
                 },
