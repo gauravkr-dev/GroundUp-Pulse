@@ -1,11 +1,16 @@
 import React from 'react'
 import Header from './_components/header'
+import PostIssue from './_components/post-issue'
 
 const page = () => {
     return (
-        <div className="">
+        <div>
             <Header />
-            <h2 className="mt-[800px]">Dashboard</h2>
+            <PostIssue />
+
+            <div className='mt-[800px]'>
+                 Ram
+            </div>
         </div>
     )
 }

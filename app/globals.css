@@ -92,9 +92,9 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
+  --primary: #296bc2;
   /* ensure color token mapping in dark mode too */
-  --color-primary: oklch(0.922 0 0);
+  --color-primary: #296bc2;
   --color-primary-foreground: oklch(0.205 0 0);
   --primary-foreground: oklch(0.205 0 0);
   --secondary: oklch(0.269 0 0);

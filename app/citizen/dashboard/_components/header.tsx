@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { authClient } from '@/lib/auth-client';
-import { CreditCardIcon, LogOut, StarIcon } from 'lucide-react';
+import { LogOut, StarIcon } from 'lucide-react';
 import Image from 'next/image'
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -18,10 +18,15 @@ const Header = () => {
     const [scrolled, setScrolled] = useState(false);
     const { data, isPending } = authClient.useSession();
 
+    useEffect(() => {
+        const onScroll = () => setScrolled(window.scrollY > 0);
+        onScroll();
+        window.addEventListener("scroll", onScroll, { passive: true });
+        return () => window.removeEventListener("scroll", onScroll);
+    }, []);
+
     if (isPending || !data?.user) {
-        return (
-            null
-        )
+        return null
     }
 
     const handleSignOut = () => authClient.signOut({
@@ -34,17 +39,11 @@ const Header = () => {
         }
     })
 
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useEffect(() => {
-        const onScroll = () => setScrolled(window.scrollY > 0);
-        onScroll();
-        window.addEventListener("scroll", onScroll, { passive: true });
-        return () => window.removeEventListener("scroll", onScroll);
-    }, []);
+    
 
     return (
         <div className={`fixed top-0 left-0 z-20 w-full transition-all duration-300 backdrop-blur-sm ${scrolled ? 'border-b' : 'border-b-0'}`}>
-            <div className="flex flex-row justify-between items-center px-12 my-2">
+            <div className="flex flex-row justify-between items-center px-4 md:px-12 my-2">
                 <div>
                     <Image src="/groundup_pulse2.png" alt="GroundUp Pulse Logo" width={120} height={80} />
                 </div>
