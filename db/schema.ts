@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, index, pgEnum, decimal } from "drizzle-orm/pg-core";
+import { nanoid } from "nanoid";
 
 export const user = pgTable("user", {
     id: text("id").primaryKey(),
@@ -95,3 +96,47 @@ export const accountRelations = relations(account, ({ one }) => ({
     }),
 }));
 
+// Post issue table
+
+export const issueCategoryEnum = pgEnum("issue_category", [
+    "water",           // Water leakage, contamination
+    "road",            // Potholes, damage
+    "electricity",     // Power outage, street lights
+    "sanitation",      // Waste dumping, drainage
+    "traffic",         // Signals, accidents
+    "other",
+]);
+
+export const issueStatusEnum = pgEnum("issue_status", [
+    "open",            // AI done, authority ka wait
+    "assigned",        // Authority ne liya
+    "resolved",        // Fix ho gaya
+    "rejected",        // Authority ne reject kar diya
+]);
+
+export const postIssue = pgTable("post_issue", {
+    id: text("id")
+        .primaryKey()
+        .$default(() => nanoid()),
+    userId: text("user_id")
+        .notNull()
+        .references(() => user.id, { onDelete: "cascade" }),
+    images: text("images").array().notNull(), // Array of image URLs
+    title: text("title").notNull(),
+    description: text("description").notNull(),
+    describe_issue: text("describe_issue").notNull(),
+    latitude: decimal("latitude", { precision: 10, scale: 7 }).notNull(),
+    longitude: decimal("longitude", { precision: 10, scale: 7 }).notNull(),
+    address: text("address").notNull(),
+    category: issueCategoryEnum("category").notNull(),
+    department: text("department").notNull(),
+    status: issueStatusEnum("status").notNull().default("open"),
+    emergency: boolean("emergency").default(false).notNull(),
+    perority_score: text("perority_score").notNull(),
+    rejectReason: text("reject_reason"),
+    resolvedAt: timestamp("resolved_at"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+        .$onUpdate(() => /* @__PURE__ */ new Date())
+        .notNull(),
+})
