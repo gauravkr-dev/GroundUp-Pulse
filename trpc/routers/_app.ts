@@ -1,7 +1,8 @@
+import { postIssueRouter } from '@/modules/post_issue/server/procedures';
 import { createTRPCRouter } from '../init';
 
 export const appRouter = createTRPCRouter({
-    // Example router, add your own routers here
+    postIssue: postIssueRouter,
 });
 
 // export type definition of API

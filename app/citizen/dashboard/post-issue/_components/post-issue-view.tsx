@@ -15,7 +15,19 @@ import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 import IssueImageUpload from "./IssueImageUpload"
+import { useMutation } from "@tanstack/react-query"
+import { useTRPC } from "@/trpc/client"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
+export const categories = [
+    "water",
+    "road",
+    "electricity",
+    "sanitation",
+    "traffic",
+    "other",
+] as const;
 const postIssueFormSchema = z.object({
     describe_issue: z
         .string()
@@ -28,7 +40,7 @@ const postIssueFormSchema = z.object({
 
     address: z.string().nonempty("Address is required.").min(5, "Please provide a valid address or landmark."),
 
-    category: z.string().nonempty("Please select a relevant issue category.")
+    category: z.enum(categories, { message: "Please select a relavent issue category." }),
 })
 
 type FormData = z.infer<typeof postIssueFormSchema>
@@ -39,6 +51,23 @@ const PostIssueView = () => {
         lng: number
     } | null>(null)
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const trpc = useTRPC();
+    const router = useRouter();
+    const createPostIssue = useMutation(
+        trpc.postIssue.create.mutationOptions({
+            onSuccess: () => {
+                toast.success("Issue reported successfully!")
+                router.push("/citizen/dashboard")
+            },
+            onError: (error) => {
+                toast.error("Failed to report the issue. Please try again.")
+                console.error("Error reporting issue:", error)
+            }
+        })
+    )
+
     const form = useForm<FormData>({
         resolver: zodResolver(postIssueFormSchema),
         defaultValues: {
@@ -47,7 +76,7 @@ const PostIssueView = () => {
             latitude: 0,
             longitude: 0,
             address: "",
-            category: "",
+            category: undefined,
         },
     })
 
@@ -60,7 +89,20 @@ const PostIssueView = () => {
     }, [location, form])
 
     const onSubmit = (data: FormData) => {
+        setIsSubmitting(true)
         console.log("Form Payload:", data)
+        createPostIssue.mutate({
+            title: "Title placeholder",
+            description: "Description placeholder",
+            department: "Department placeholder",
+            perority_score: "0",
+            describe_issue: data.describe_issue,
+            images: data.images,
+            latitude: data.latitude,
+            longitude: data.longitude,
+            address: data.address,
+            category: data.category
+        })
     }
 
     return (
@@ -68,6 +110,7 @@ const PostIssueView = () => {
             <Link href="/citizen/dashboard" className="my-6 px-4 md:px-12">
                 <Button
                     className="group max-w-max bg-primary text-primary-foreground text-sm py-2 px-3 rounded hover:cursor-pointer hover:bg-primary/90"
+                    disabled={isSubmitting}
                 >
                     <ArrowLeft className='group-hover:-translate-x-1 transition-transform dark:text-foreground' />
                     <span className='dark:text-foreground'>Back</span>
@@ -132,12 +175,11 @@ const PostIssueView = () => {
                                     <SelectContent>
                                         <SelectGroup>
                                             <SelectLabel>Issue Categories</SelectLabel>
-                                            <SelectItem value="water">Water</SelectItem>
-                                            <SelectItem value="road">Road</SelectItem>
-                                            <SelectItem value="electricity">Electricity</SelectItem>
-                                            <SelectItem value="sanitation">Sanitation</SelectItem>
-                                            <SelectItem value="traffic">Traffic</SelectItem>
-                                            <SelectItem value="other">Other</SelectItem>
+                                            {categories.map((cat) => (
+                                                <SelectItem key={cat} value={cat}>
+                                                    {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                                                </SelectItem>
+                                            ))}
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
@@ -197,8 +239,9 @@ const PostIssueView = () => {
                     <div className="flex justify-end pt-2">
                         <Button
                             className="group w-32 bg-primary text-primary-foreground text-sm py-2 px-3 rounded hover:cursor-pointer hover:bg-primary/90"
+                            disabled={isSubmitting}
                         >
-                            <span className='dark:text-foreground'>Submit Issue</span>
+                            <span className='dark:text-foreground'>{isSubmitting ? "Submitting..." : "Submit Issue"}</span>
                             <ArrowRight className='group-hover:translate-x-1 transition-transform dark:text-foreground' />
                         </Button>
                     </div>
