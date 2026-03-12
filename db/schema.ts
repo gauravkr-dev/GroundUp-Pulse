@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean, index, pgEnum, decimal } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, index, pgEnum, doublePrecision } from "drizzle-orm/pg-core";
 import { nanoid } from "nanoid";
 
 export const user = pgTable("user", {
@@ -125,8 +125,8 @@ export const postIssue = pgTable("post_issue", {
     title: text("title").notNull(),
     description: text("description").notNull(),
     describe_issue: text("describe_issue").notNull(),
-    latitude: decimal("latitude", { precision: 10, scale: 7 }).notNull(),
-    longitude: decimal("longitude", { precision: 10, scale: 7 }).notNull(),
+    latitude: doublePrecision("latitude").notNull(),
+    longitude: doublePrecision("longitude").notNull(),
     address: text("address").notNull(),
     category: issueCategoryEnum("category").notNull(),
     department: text("department").notNull(),
