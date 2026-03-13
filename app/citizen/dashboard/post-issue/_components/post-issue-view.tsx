@@ -19,6 +19,7 @@ import { useMutation } from "@tanstack/react-query"
 import { useTRPC } from "@/trpc/client"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+import axios from "axios"
 
 export const categories = [
     "water",
@@ -88,9 +89,18 @@ const PostIssueView = () => {
         }
     }, [location, form])
 
-    const onSubmit = (data: FormData) => {
+    const onSubmit = async (data: FormData) => {
         setIsSubmitting(true)
-        console.log("Form Payload:", data)
+        const result = await axios.post("/api/post-issue-analysis", {
+            describe_issue: data.describe_issue,
+            images: data.images,
+            latitude: data.latitude,
+            longitude: data.longitude,
+            address: data.address,
+            category: data.category
+        })
+
+        console.log("Analysis result:", result.data.response);
         createPostIssue.mutate({
             title: "Title placeholder",
             description: "Description placeholder",
