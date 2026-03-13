@@ -121,11 +121,12 @@ const PostIssueView = () => {
         <>
             <Link href="/citizen/dashboard" className="my-6 px-4 md:px-12">
                 <Button
-                    className="group max-w-max bg-primary text-primary-foreground text-sm py-2 px-3 rounded hover:cursor-pointer hover:bg-primary/90"
+                    className="group max-w-max text-sm py-2 px-3 rounded hover:cursor-pointer"
                     disabled={isSubmitting}
+                    variant={"link"}
                 >
                     <ArrowLeft className='group-hover:-translate-x-1 transition-transform dark:text-foreground' />
-                    <span className='dark:text-foreground'>Back</span>
+                    <span className='dark:text-foreground underline'>Back</span>
 
                 </Button>
             </Link>

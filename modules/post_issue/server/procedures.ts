@@ -4,6 +4,8 @@ import { db } from "@/db";
 import { postIssue } from "@/db/schema";
 import { createInsertSchema } from "drizzle-zod";
 import { and, desc, eq } from "drizzle-orm";
+import z from "zod";
+import { TRPCError } from "@trpc/server";
 
 // Omit `userId` from the client input schema because the server
 // injects the authenticated user's id using `ctx.auth.user.id`.
@@ -36,6 +38,33 @@ export const postIssueRouter = createTRPCRouter({
                     )
                 )
                 .orderBy(desc(postIssue.createdAt), desc(postIssue.id))
+            if (!data) {
+                throw new TRPCError({
+                    code: "FORBIDDEN",
+                    message: "You don't have access to these issues.",
+                });
+            }
+            return data;
+
+        }),
+    getOne: protectedProcedure
+        .input(z.object({ id: z.string() }))
+        .query(async ({ ctx, input }) => {
+            const [data] = await db
+                .select()
+                .from(postIssue)
+                .where(
+                    and(
+                        eq(postIssue.id, input.id),
+                        eq(postIssue.userId, ctx.auth.user.id)
+                    )
+                )
+            if (!data) {
+                throw new TRPCError({
+                    code: "FORBIDDEN",
+                    message: "Issue not found or you don't have access to it.",
+                });
+            }
             return data;
         }),
 })
