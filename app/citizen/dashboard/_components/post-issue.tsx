@@ -24,10 +24,9 @@ const PostIssue = () => {
 
                             <Link href="/citizen/dashboard/post-issue" className="">
                                 <Button
-                                    className="group w-32 bg-primary text-primary-foreground text-sm py-2 px-3 rounded hover:cursor-pointer hover:bg-primary/90"
+                                    className="group max-w-max bg-primary text-primary-foreground text-sm py-2 px-3 rounded hover:cursor-pointer hover:bg-primary/90"
                                 >
-                                    <span className='dark:text-foreground'>Post an issue</span>
-                                    <ArrowRight className='group-hover:translate-x-1 transition-transform dark:text-foreground' />
+                                    <span className='dark:text-foreground'>Post issue</span>
                                 </Button>
                             </Link>
                         </CardHeader>

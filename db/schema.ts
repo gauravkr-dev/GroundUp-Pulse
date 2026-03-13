@@ -123,7 +123,6 @@ export const postIssue = pgTable("post_issue", {
         .references(() => user.id, { onDelete: "cascade" }),
     images: text("images").array().notNull(), // Array of image URLs
     title: text("title").notNull(),
-    description: text("description").notNull(),
     describe_issue: text("describe_issue").notNull(),
     latitude: doublePrecision("latitude").notNull(),
     longitude: doublePrecision("longitude").notNull(),
@@ -132,7 +131,7 @@ export const postIssue = pgTable("post_issue", {
     department: text("department").notNull(),
     status: issueStatusEnum("status").notNull().default("open"),
     emergency: boolean("emergency").default(false).notNull(),
-    perority_score: text("perority_score").notNull(),
+    priority_score: text("priority_score").notNull(),
     rejectReason: text("reject_reason"),
     resolvedAt: timestamp("resolved_at"),
     createdAt: timestamp("created_at").defaultNow().notNull(),

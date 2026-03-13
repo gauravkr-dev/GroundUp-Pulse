@@ -3,14 +3,30 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
     const { describe_issue, images, latitude, longitude, address, category } = await req.json();
-    console.log("Received issue analysis request:", {
-        describe_issue,
-        images,
-        latitude,
-        longitude,
-        address,
-        category
-    });
+
+    function getDepartment(category: string) {
+        switch (category) {
+            case "water":
+                return "Water Supply Department";
+            case "road":
+                return "Public Works Department (PWD)";
+
+            case "electricity":
+                return "Electricity Board";
+
+            case "sanitation":
+                return "Municipal Sanitation Department";
+
+            case "traffic":
+                return "Traffic Police Department";
+
+            default:
+                return "Municipal Corporation";
+        }
+
+    }
+
+    const department = getDepartment(category);
 
     // AI Analysis
 
@@ -20,6 +36,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
         response: aiResponse,
+        department: department,
     });
 
 }
