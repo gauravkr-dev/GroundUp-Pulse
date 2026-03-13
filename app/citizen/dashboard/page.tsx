@@ -8,11 +8,13 @@ import { LoaderFive } from '@/components/ui/loader'
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
 import { ErrorState } from '@/components/ui/error'
+import ClosedIssue from './_components/closed-issue'
 
 const page = () => {
 
     const queryClient = getQueryClient();
     void queryClient.prefetchQuery(trpc.postIssue.getMany.queryOptions())
+    void queryClient.prefetchQuery(trpc.postIssue.getManyClosed.queryOptions())
     return (
         <div>
             <div className='px-4 md:px-12 mt-6 mb-8'>
@@ -50,9 +52,32 @@ const page = () => {
                     </ErrorBoundary>
                 </Suspense>
             </HydrationBoundary>
-            <div className='mt-[800px]'>
-                Ram
+            <div className='px-4 md:px-12 mt-6'>
+                <Button
+                    className="group max-w-max text-sm text-green-500"
+                    variant={"link"}
+                >
+                    <span className='underline'>Closed Issues</span>
+                    <ArrowRight className='group-hover:translate-x-1 transition-transform' />
+                </Button>
             </div>
+
+            <HydrationBoundary state={dehydrate(queryClient)}>
+                <Suspense fallback={
+                    <div className='flex flex-col items-center justify-center gap-4 py-18'>
+                        <LoaderFive text="Loading closed issues..." />
+                    </div>
+                }>
+                    <ErrorBoundary fallback={
+                        <div
+                            className='px-4 md:px-12 text-center justify-center flex mt-18 text-red-500'>
+                            <ErrorState />
+                        </div>
+                    }>
+                        <ClosedIssue />
+                    </ErrorBoundary>
+                </Suspense>
+            </HydrationBoundary>
         </div>
     )
 }

@@ -6,7 +6,7 @@ import { authClient } from '@/lib/auth-client';
 import { useTRPC } from '@/trpc/client';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
-import { ArrowRight, ChevronRight, Component, Landmark, MapPin, MessagesSquare, Minus } from 'lucide-react';
+import { ArrowRight, ChevronRight, CircleCheckBig, Landmark, MapPin, MessagesSquare, Minus, ShieldBan } from 'lucide-react';
 import Image from 'next/image';
 import React, { useState } from 'react'
 import IssueMap from './issue-map-detail';
@@ -57,13 +57,21 @@ const DetailIssueView = ({ id }: DetailIssueViewProps) => {
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <div>
-                                    <Button className={`rounded-md ${issue.status === "open" ? " text-yellow-500 border-yellow-500 bg-yellow-200 dark:bg-yellow-800/30   " :
-                                        issue.status === "assigned" ? "text-blue-500 bg-blue-200 dark:bg-blue-800/30 border-blue-500" :
-                                            issue.status === "resolved" ? "text-green-500 bg-green-200 dark:bg-green-800/30 border-green-500" :
-                                                "text-red-500 bg-red-200 dark:bg-red-800/30 border-red-500"
-                                        }`}
-                                    >
-                                        <p>{issue.status}</p>
+                                    <Button className="rounded-md" variant={"outline"}>
+                                        <p className='flex items-center gap-2'>
+                                            {issue.status === "resolved" ? <CircleCheckBig className="text-green-500 inline-block" /> : issue.status === "rejected" ? <ShieldBan className="text-red-500 inline-block" /> :
+                                                issue.status === "assigned" ?
+                                                    <span className="relative flex h-3 w-3">
+                                                        <span className="animate-ping absolute inline-block h-full w-full rounded-full bg-primary opacity-75"></span>
+                                                        <span className="relative inline-flex h-3 w-3 rounded-full bg-primary"></span>
+                                                    </span> :
+                                                    <span className="relative flex h-3 w-3">
+                                                        <span className="animate-ping absolute inline-block h-full w-full rounded-full bg-yellow-500 opacity-75"></span>
+                                                        <span className="relative inline-flex h-3 w-3 rounded-full bg-yellow-500"></span>
+                                                    </span>
+                                            }
+                                            {issue.status.charAt(0).toUpperCase() + issue.status.slice(1)}
+                                        </p>
                                     </Button>
                                 </div>
                             </TooltipTrigger>
@@ -74,7 +82,7 @@ const DetailIssueView = ({ id }: DetailIssueViewProps) => {
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <div>
-                                    <Button className='cursor-pointer rounded-md text-green-500 border-green-500 bg-green-200 dark:bg-green-800/30'>
+                                    <Button className='cursor-pointer rounded-md' variant={"outline"}>
                                         <MessagesSquare />
                                     </Button>
                                 </div>
@@ -85,7 +93,7 @@ const DetailIssueView = ({ id }: DetailIssueViewProps) => {
                         </Tooltip>
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <Button className='cursor-pointer rounded-md text-red-500 border-red-500 bg-red-200 dark:bg-red-800/30'>
+                                <Button className='cursor-pointer rounded-md text-red-500' variant={"outline"}>
                                     {issue.priority_score}%
                                 </Button>
                             </TooltipTrigger>

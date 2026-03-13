@@ -7,14 +7,14 @@ import { authClient } from '@/lib/auth-client';
 import { useTRPC } from '@/trpc/client';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
-import { ArrowRight, MessagesSquare } from 'lucide-react'
+import { ArrowRight, CircleCheckBig, MessagesSquare, ShieldBan } from 'lucide-react'
 import Link from 'next/link';
 import React from 'react'
-const OpenIssue = () => {
+const ClosedIssue = () => {
     const { data, isPending } = authClient.useSession();
     const trpc = useTRPC();
 
-    const { data: issues } = useSuspenseQuery(trpc.postIssue.getMany.queryOptions());
+    const { data: issues } = useSuspenseQuery(trpc.postIssue.getManyClosed.queryOptions());
     if (isPending || !data?.user) {
         return null
     }
@@ -26,7 +26,7 @@ const OpenIssue = () => {
             {issues.length === 0 ? (
                 <div className='flex flex-col items-center justify-center gap-4 py-12'>
                     <EmptyState />
-                    <p className='mt-4 text-sm text-center'>No open issues found. Be the first to report an issue in your area!</p>
+                    <p className='mt-4 text-sm text-center'>No closed issues found.</p>
                 </div>
             ) : (
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
@@ -59,16 +59,7 @@ const OpenIssue = () => {
                                             <div>
                                                 <Button className="rounded-md" variant={"outline"}>
                                                     <p className='flex items-center gap-2'>
-                                                        {issue.status === "assigned" ?
-                                                            <span className="relative flex h-3 w-3">
-                                                                <span className="animate-ping absolute inline-block h-full w-full rounded-full bg-primary opacity-75"></span>
-                                                                <span className="relative inline-flex h-3 w-3 rounded-full bg-primary"></span>
-                                                            </span> :
-                                                            <span className="relative flex h-3 w-3">
-                                                                <span className="animate-ping absolute inline-block h-full w-full rounded-full bg-yellow-500 opacity-75"></span>
-                                                                <span className="relative inline-flex h-3 w-3 rounded-full bg-yellow-500"></span>
-                                                            </span>
-                                                        }
+                                                        {issue.status === "resolved" ? <CircleCheckBig className="text-green-500 inline-block" /> : <ShieldBan className="text-red-500 inline-block" />}
                                                         {issue.status.charAt(0).toUpperCase() + issue.status.slice(1)}
                                                     </p>
                                                 </Button>
@@ -139,4 +130,4 @@ const OpenIssue = () => {
     )
 }
 
-export default OpenIssue
+export default ClosedIssue
