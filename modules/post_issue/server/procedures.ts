@@ -3,7 +3,7 @@ import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { db } from "@/db";
 import { postIssue } from "@/db/schema";
 import { createInsertSchema } from "drizzle-zod";
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, or } from "drizzle-orm";
 import z from "zod";
 import { TRPCError } from "@trpc/server";
 
@@ -34,7 +34,10 @@ export const postIssueRouter = createTRPCRouter({
                 .where(
                     and(
                         eq(postIssue.userId, ctx.auth.user.id),
-                        eq(postIssue.status, "open")
+                        or(
+                            eq(postIssue.status, "open"),
+                            eq(postIssue.status, "assigned")
+                        )
                     )
                 )
                 .orderBy(desc(postIssue.createdAt), desc(postIssue.id))
@@ -63,6 +66,29 @@ export const postIssueRouter = createTRPCRouter({
                 throw new TRPCError({
                     code: "FORBIDDEN",
                     message: "Issue not found or you don't have access to it.",
+                });
+            }
+            return data;
+        }),
+    getManyClosed: protectedProcedure
+        .query(async ({ ctx }) => {
+            const data = await db
+                .select()
+                .from(postIssue)
+                .where(
+                    and(
+                        eq(postIssue.userId, ctx.auth.user.id),
+                        or(
+                            eq(postIssue.status, "resolved"),
+                            eq(postIssue.status, "rejected")
+                        )
+                    )
+                )
+                .orderBy(desc(postIssue.createdAt), desc(postIssue.id))
+            if (!data) {
+                throw new TRPCError({
+                    code: "FORBIDDEN",
+                    message: "You don't have access to these issues.",
                 });
             }
             return data;
