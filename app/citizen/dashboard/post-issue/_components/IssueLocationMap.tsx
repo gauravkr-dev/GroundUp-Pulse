@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState } from "react"
 import maplibregl from "maplibre-gl"
-import { MapPin } from "@/components/animate-ui/icons/map-pin"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { LocateFixed } from "lucide-react"
 // @import "maplibre-gl/dist/maplibre-gl.css"
 
 interface Props {
@@ -141,7 +141,7 @@ export default function IssueLocationMap({ onLocationSelect }: Props) {
                 onClick={handleCurrentLocation}
                 className="absolute top-3 left-3 z-10  px-3 py-1 rounded-md shadow text-sm cursor-pointer"
             >
-                <MapPin animateOnHover />
+                <LocateFixed className="dark:text-foreground" />
             </Button>
 
             {/* Map */}

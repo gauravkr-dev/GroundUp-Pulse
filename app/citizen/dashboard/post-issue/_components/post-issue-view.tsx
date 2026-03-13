@@ -10,7 +10,7 @@ import React, { useEffect, useState } from "react"
 import { useForm, Controller } from "react-hook-form"
 import { z } from "zod"
 import IssueLocationMap from "./IssueLocationMap"
-import { ArrowLeft, ArrowRight } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -34,7 +34,7 @@ const postIssueFormSchema = z.object({
         .string()
         .nonempty("Description is required.")
         .min(10, "Please provide a detailed description of the issue."),
-    images: z.array(z.string()).min(2, "Please upload at least two images.").max(4, "You can upload up to 4 images."),
+    images: z.array(z.string()).min(1, "Please upload at least one image.").max(4, "You can upload up to 4 images."),
     latitude: z.number().refine((v) => v !== 0 && !Number.isNaN(v), { message: "Please mark the exact location on the map." }),
 
     longitude: z.number().refine((v) => v !== 0 && !Number.isNaN(v), { message: "Please mark the exact location on the map." }),
@@ -100,12 +100,14 @@ const PostIssueView = () => {
             category: data.category
         })
 
-        console.log("Analysis result:", result.data.response);
+        const title = result.data.response.title;
+        const priority_score = result.data.response.priority_score;
+        const department = result.data.department;
+        console.log("Analysis result:", department, title, priority_score);
         createPostIssue.mutate({
-            title: "Title placeholder",
-            description: "Description placeholder",
-            department: "Department placeholder",
-            perority_score: "0",
+            title: title,
+            department: department,
+            priority_score: String(priority_score),
             describe_issue: data.describe_issue,
             images: data.images,
             latitude: data.latitude,
@@ -248,11 +250,10 @@ const PostIssueView = () => {
                     {/* Submit */}
                     <div className="flex justify-end pt-2">
                         <Button
-                            className="group w-32 bg-primary text-primary-foreground text-sm py-2 px-3 rounded hover:cursor-pointer hover:bg-primary/90"
+                            className="group max-w-max bg-primary text-primary-foreground text-sm py-2 px-3 rounded hover:cursor-pointer hover:bg-primary/90"
                             disabled={isSubmitting}
                         >
                             <span className='dark:text-foreground'>{isSubmitting ? "Submitting..." : "Submit Issue"}</span>
-                            <ArrowRight className='group-hover:translate-x-1 transition-transform dark:text-foreground' />
                         </Button>
                     </div>
 
