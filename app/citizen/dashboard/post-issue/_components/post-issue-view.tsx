@@ -12,7 +12,6 @@ import { z } from "zod"
 import IssueLocationMap from "./IssueLocationMap"
 import { ArrowLeft } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import Link from "next/link"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 import IssueImageUpload from "./IssueImageUpload"
 import { useMutation } from "@tanstack/react-query"
@@ -119,17 +118,15 @@ const PostIssueView = () => {
 
     return (
         <>
-            <Link href="/citizen/dashboard" className="my-6 px-4 md:px-12">
-                <Button
-                    className="group max-w-max text-sm py-2 px-3 rounded hover:cursor-pointer"
-                    disabled={isSubmitting}
-                    variant={"link"}
-                >
-                    <ArrowLeft className='group-hover:-translate-x-1 transition-transform dark:text-foreground' />
-                    <span className='dark:text-foreground underline'>Back</span>
+            <Button
+                onClick={() => router.back()}
+                className="group max-w-max text-sm py-2 px-3 rounded hover:cursor-pointer my-6 px-4 md:px-12"
+                variant={"link"}
+            >
+                <ArrowLeft className='group-hover:-translate-x-1 transition-transform dark:text-foreground' />
+                <span className='dark:text-foreground underline'>Back</span>
 
-                </Button>
-            </Link>
+            </Button>
             <div className="max-w-3xl mx-auto px-4 mb-6">
 
                 {/* Header */}

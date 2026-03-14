@@ -3,7 +3,7 @@ import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { db } from "@/db";
 import { postIssue } from "@/db/schema";
 import { createInsertSchema } from "drizzle-zod";
-import { and, desc, eq, or } from "drizzle-orm";
+import { and, count, desc, eq, or } from "drizzle-orm";
 import z from "zod";
 import { TRPCError } from "@trpc/server";
 
@@ -93,4 +93,28 @@ export const postIssueRouter = createTRPCRouter({
             }
             return data;
         }),
+
+    getStats: protectedProcedure
+        .query(async ({ ctx }) => {
+            // Total created issue
+            const [created] = await db
+                .select({ value: count() })
+                .from(postIssue)
+                .where(eq(postIssue.userId, ctx.auth.user.id))
+
+            // Total resolved issue
+            const [resolved] = await db
+                .select({ value: count() })
+                .from(postIssue)
+                .where(
+                    and(
+                        eq(postIssue.userId, ctx.auth.user.id),
+                        eq(postIssue.status, "resolved")
+                    )
+                )
+            return {
+                create_issue_count: created.value,
+                resolved_issue_count: resolved.value,
+            }
+        })
 })
