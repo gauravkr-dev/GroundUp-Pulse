@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable @next/next/no-img-element */
 "use client"
 import { Button } from '@/components/ui/button'
@@ -19,7 +20,7 @@ const formSchema = z.object({
     password: z.string().min(8, 'Password must be at least 8 characters long'),
 })
 
-export default function SignUpView() {
+export default function CitizenSignInView() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [error, setError] = useState<string | null>(null);
     const [pending, setPending] = useState(false);
@@ -28,7 +29,6 @@ export default function SignUpView() {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: '',
             email: '',
             password: '',
         },
@@ -36,20 +36,19 @@ export default function SignUpView() {
     const onSubmit = (data: z.infer<typeof formSchema>) => {
         setPending(true);
         setError(null);
-        authClient.signUp.email(
+        authClient.signIn.email(
             {
-                name: data.name,
                 email: data.email,
                 password: data.password,
-                callbackURL: '/citizen/dashboard'
             },
             {
                 onSuccess: () => {
-                    toast.success('Account created successfully!');
+                    toast.success('Signed in successfully!');
                     setPending(false);
+                    router.push('/citizen/dashboard');
                 },
                 onError: (error) => {
-                    toast.error(error.error.message || 'Sign-up failed. Please try again.');
+                    toast.error(error.error.message || 'Sign-in failed. Please try again.');
                     setPending(false);
                 }
             }
@@ -73,7 +72,7 @@ export default function SignUpView() {
                                 />
                             </Link>
                         </div>
-                        <p className="text-sm mt-6">Welcome! Create an account to get started</p>
+                        <p className="text-sm mt-6">Welcome back! sign In to your account.</p>
                     </div>
 
                     <div className="mt-6 flex flex-col gap-4">
@@ -105,7 +104,7 @@ export default function SignUpView() {
                                     fill="#eb4335"
                                     d="M130.55 50.479c24.514 0 41.05 10.589 50.479 19.438l36.844-35.974C195.245 12.91 165.798 0 130.55 0C79.49 0 35.393 29.301 13.925 71.947l42.211 32.783c10.59-31.477 39.891-54.251 74.414-54.251"></path>
                             </svg>
-                            <span className='text-white'>{socialLoading ? "Signing up..." : "Sign up with Google"}</span>
+                            <span className='text-white'>{socialLoading ? "Signing in..." : "Sign in with Google"}</span>
                         </Button>
 
                     </div>
@@ -113,22 +112,6 @@ export default function SignUpView() {
                     <hr className="my-4 border-dashed" />
 
                     <div className="space-y-5">
-                        <Field>
-                            <FieldLabel htmlFor="name">Full Name</FieldLabel>
-
-                            <Input
-                                id="name"
-                                {...form.register("name")}
-                                aria-invalid={form.formState.errors.name ? true : false}
-                                className='border border-primary'
-                            />
-
-                            {form.formState.errors.name && (
-                                <FieldError>
-                                    {form.formState.errors.name.message}
-                                </FieldError>
-                            )}
-                        </Field>
                         <Field>
                             <FieldLabel htmlFor="email">Email</FieldLabel>
 
@@ -164,17 +147,17 @@ export default function SignUpView() {
                             )}
                         </Field>
                     </div>
-                    <Button disabled={pending} className="w-full mt-4 cursor-pointer" type="submit">{pending ? 'Signing Up...' : 'Sign Up'}</Button>
+                    <Button disabled={pending} className="w-full mt-4 cursor-pointer" type="submit">{pending ? 'Signing In...' : 'Sign In'}</Button>
                 </div>
 
                 <div className="bg-muted rounded-(--radius) border p-3">
                     <p className="text-accent-foreground text-center text-sm">
-                        Have an account ?
+                        Don't have an account?{' '}
                         <Button
                             asChild
                             variant="link"
                             className="px-2">
-                            <Link href="/citizen/sign-in">Sign In</Link>
+                            <Link href="/citizen/sign-up">Create an account</Link>
                         </Button>
                     </p>
                 </div>

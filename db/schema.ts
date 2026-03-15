@@ -11,6 +11,16 @@ export const user = pgTable("user", {
     role: text("role", {
         enum: ["citizen", "authority"]
     }).notNull().default("citizen"),
+    department: text("department", {
+        enum: [
+            "Water Supply Department",
+            "Public Works Department (PWD)",
+            "Electricity Board",
+            "Municipal Sanitation Department",
+            "Traffic Police Department",
+            "Municipal Corporation"
+        ]
+    }),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
         .defaultNow()
