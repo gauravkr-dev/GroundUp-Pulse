@@ -121,7 +121,7 @@ export default function AuthoritySignInView() {
                             asChild
                             variant="link"
                             className="px-2">
-                            <Link href="/citizen/sign-up">Create an account</Link>
+                            <Link href="/authority/sign-up">Create an account</Link>
                         </Button>
                     </p>
                 </div>
