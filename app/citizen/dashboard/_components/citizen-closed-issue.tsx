@@ -10,7 +10,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { ArrowRight, CircleCheckBig, MessagesSquare, ShieldBan } from 'lucide-react'
 import Link from 'next/link';
 import React from 'react'
-const ClosedIssue = () => {
+const CitizenClosedIssue = () => {
     const { data, isPending } = authClient.useSession();
     const trpc = useTRPC();
 
@@ -130,4 +130,4 @@ const ClosedIssue = () => {
     )
 }
 
-export default ClosedIssue
+export default CitizenClosedIssue

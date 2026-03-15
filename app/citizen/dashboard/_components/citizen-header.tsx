@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { toast } from 'sonner';
 
-const Header = () => {
+const CitizenHeader = () => {
     const router = useRouter();
     const isMobile = useIsMobile();
     const [scrolled, setScrolled] = useState(false);
@@ -142,4 +142,4 @@ const Header = () => {
     )
 }
 
-export default Header
+export default CitizenHeader

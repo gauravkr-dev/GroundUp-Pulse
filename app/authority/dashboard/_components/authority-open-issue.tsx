@@ -10,11 +10,11 @@ import { formatDistanceToNow } from 'date-fns';
 import { ArrowRight, MessagesSquare } from 'lucide-react'
 import Link from 'next/link';
 import React from 'react'
-const OpenIssue = () => {
+const AuthorityOpenIssue = () => {
     const { data, isPending } = authClient.useSession();
     const trpc = useTRPC();
 
-    const { data: issues } = useSuspenseQuery(trpc.postIssue.getMany.queryOptions());
+    const { data: issues } = useSuspenseQuery(trpc.issue.getMany.queryOptions());
     if (isPending || !data?.user) {
         return null
     }
@@ -121,7 +121,7 @@ const OpenIssue = () => {
 
                             {/* // For more */}
                             <div className="flex justify-end">
-                                <Link href={`/citizen/dashboard/${issue.id}`}>
+                                <Link href={`/authority/dashboard/${issue.id}`}>
                                     <Button variant={"link"} className='group mt-4 text-sm cursor-pointer'>
                                         <span className='underline'>View Details</span>
                                         <ArrowRight className='group-hover:translate-x-1 transition-transform' />
@@ -139,4 +139,4 @@ const OpenIssue = () => {
     )
 }
 
-export default OpenIssue
+export default AuthorityOpenIssue

@@ -11,8 +11,10 @@ const page = async () => {
     headers: await headers(),
   });
 
-  if (session) {
-    redirect('/citizen/dashboard');
+  if (session?.user.role === "citizen") {
+    redirect("/citizen/dashboard");
+  } else if (session?.user.role === "authority") {
+    redirect("/authority/dashboard");
   }
 
   return (
@@ -26,7 +28,7 @@ const page = async () => {
         </Button>
       </Link>
 
-      <Link href="/authority/department">
+      <Link href="/authority/sign-up">
         <Button variant="outline" className='cursor-pointer'>
           🏛️ Authority
         </Button>

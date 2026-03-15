@@ -1,5 +1,5 @@
 import React from 'react'
-import CitizenHeader from './_components/citizen-header'
+import AuthorityHeader from './_components/authority-header'
 interface LayoutProps {
     children: React.ReactNode
 }
@@ -7,7 +7,7 @@ interface LayoutProps {
 const Layout = ({ children }: LayoutProps) => {
     return (
         <div>
-            <CitizenHeader />
+            <AuthorityHeader />
             <div className='mt-28'>
                 {children}
             </div>
