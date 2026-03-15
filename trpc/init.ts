@@ -26,6 +26,17 @@ export const createTRPCRouter = t.router;
 export const createCallerFactory = t.createCallerFactory;
 export const baseProcedure = t.procedure;
 
+export const authorityProcedure = baseProcedure.use(async ({ ctx, next }) => {
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
+    if (!session || !session.user || session.user.role !== "authority") {
+        throw new TRPCError({ code: 'UNAUTHORIZED', message: 'You must be an authority to access this resource.' });
+    }
+    return next({ ctx: { ...ctx, auth: session } });
+});
+
+
 export const protectedProcedure = baseProcedure.use(async ({ ctx, next }) => {
     const session = await auth.api.getSession({
         headers: await headers(),
