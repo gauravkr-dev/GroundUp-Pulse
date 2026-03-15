@@ -1,10 +1,10 @@
 import React from 'react'
-import CitizenSignUpView from '../_components/citizen-sign-up-view'
+import AuthoritySignInView from '../_components/authority-sign-in-view'
 
 const page = () => {
     return (
         <div>
-            <CitizenSignUpView />
+            <AuthoritySignInView />
         </div>
     )
 }

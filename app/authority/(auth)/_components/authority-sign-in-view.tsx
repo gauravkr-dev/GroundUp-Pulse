@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable @next/next/no-img-element */
 "use client"
 import { Button } from '@/components/ui/button'
@@ -14,21 +15,18 @@ import { toast } from 'sonner'
 import { Field, FieldError, FieldLabel } from '@/components/ui/field'
 
 const formSchema = z.object({
-    name: z.string().min(1, 'Name is required'),
     email: z.string().email(),
     password: z.string().min(8, 'Password must be at least 8 characters long'),
 })
 
-export default function SignUpView() {
+export default function AuthoritySignInView() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [error, setError] = useState<string | null>(null);
     const [pending, setPending] = useState(false);
-    const [socialLoading, setSocialLoading] = useState(false);
     const router = useRouter();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: '',
             email: '',
             password: '',
         },
@@ -36,20 +34,19 @@ export default function SignUpView() {
     const onSubmit = (data: z.infer<typeof formSchema>) => {
         setPending(true);
         setError(null);
-        authClient.signUp.email(
+        authClient.signIn.email(
             {
-                name: data.name,
                 email: data.email,
                 password: data.password,
-                callbackURL: '/citizen/dashboard'
             },
             {
                 onSuccess: () => {
-                    toast.success('Account created successfully!');
+                    toast.success('Signed in successfully!');
                     setPending(false);
+                    router.push('/authority/dashboard');
                 },
                 onError: (error) => {
-                    toast.error(error.error.message || 'Sign-up failed. Please try again.');
+                    toast.error(error.error.message || 'Sign-in failed. Please try again.');
                     setPending(false);
                 }
             }
@@ -73,62 +70,12 @@ export default function SignUpView() {
                                 />
                             </Link>
                         </div>
-                        <p className="text-sm mt-6">Welcome! Create an account to get started</p>
-                    </div>
-
-                    <div className="mt-6 flex flex-col gap-4">
-                        <Button
-                            onClick={() => {
-                                setSocialLoading(true);
-                                authClient.signIn.social({
-                                    provider: "google"
-                                })
-                            }}
-                            type="button"
-
-                            className='cursor-pointer'>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="0.98em"
-                                height="1em"
-                                viewBox="0 0 256 262">
-                                <path
-                                    fill="#4285f4"
-                                    d="M255.878 133.451c0-10.734-.871-18.567-2.756-26.69H130.55v48.448h71.947c-1.45 12.04-9.283 30.172-26.69 42.356l-.244 1.622l38.755 30.023l2.685.268c24.659-22.774 38.875-56.282 38.875-96.027"></path>
-                                <path
-                                    fill="#34a853"
-                                    d="M130.55 261.1c35.248 0 64.839-11.605 86.453-31.622l-41.196-31.913c-11.024 7.688-25.82 13.055-45.257 13.055c-34.523 0-63.824-22.773-74.269-54.25l-1.531.13l-40.298 31.187l-.527 1.465C35.393 231.798 79.49 261.1 130.55 261.1"></path>
-                                <path
-                                    fill="#fbbc05"
-                                    d="M56.281 156.37c-2.756-8.123-4.351-16.827-4.351-25.82c0-8.994 1.595-17.697 4.206-25.82l-.073-1.73L15.26 71.312l-1.335.635C5.077 89.644 0 109.517 0 130.55s5.077 40.905 13.925 58.602z"></path>
-                                <path
-                                    fill="#eb4335"
-                                    d="M130.55 50.479c24.514 0 41.05 10.589 50.479 19.438l36.844-35.974C195.245 12.91 165.798 0 130.55 0C79.49 0 35.393 29.301 13.925 71.947l42.211 32.783c10.59-31.477 39.891-54.251 74.414-54.251"></path>
-                            </svg>
-                            <span className='text-white'>{socialLoading ? "Signing up..." : "Sign up with Google"}</span>
-                        </Button>
-
+                        <p className="text-sm mt-6">Welcome back! sign In to your account.</p>
                     </div>
 
                     <hr className="my-4 border-dashed" />
 
                     <div className="space-y-5">
-                        <Field>
-                            <FieldLabel htmlFor="name">Full Name</FieldLabel>
-
-                            <Input
-                                id="name"
-                                {...form.register("name")}
-                                aria-invalid={form.formState.errors.name ? true : false}
-                                className='border border-primary'
-                            />
-
-                            {form.formState.errors.name && (
-                                <FieldError>
-                                    {form.formState.errors.name.message}
-                                </FieldError>
-                            )}
-                        </Field>
                         <Field>
                             <FieldLabel htmlFor="email">Email</FieldLabel>
 
@@ -164,17 +111,17 @@ export default function SignUpView() {
                             )}
                         </Field>
                     </div>
-                    <Button disabled={pending} className="w-full mt-4 cursor-pointer" type="submit">{pending ? 'Signing Up...' : 'Sign Up'}</Button>
+                    <Button disabled={pending} className="w-full mt-4 cursor-pointer" type="submit">{pending ? 'Signing In...' : 'Sign In'}</Button>
                 </div>
 
                 <div className="bg-muted rounded-(--radius) border p-3">
                     <p className="text-accent-foreground text-center text-sm">
-                        Have an account ?
+                        Don't have an account?{' '}
                         <Button
                             asChild
                             variant="link"
                             className="px-2">
-                            <Link href="/citizen/sign-in">Sign In</Link>
+                            <Link href="/authority/sign-up">Create an account</Link>
                         </Button>
                     </p>
                 </div>

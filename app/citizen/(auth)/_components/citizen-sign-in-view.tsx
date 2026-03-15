@@ -20,7 +20,7 @@ const formSchema = z.object({
     password: z.string().min(8, 'Password must be at least 8 characters long'),
 })
 
-export default function SignInView() {
+export default function CitizenSignInView() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [error, setError] = useState<string | null>(null);
     const [pending, setPending] = useState(false);
@@ -29,7 +29,6 @@ export default function SignInView() {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: '',
             email: '',
             password: '',
         },
@@ -37,20 +36,19 @@ export default function SignInView() {
     const onSubmit = (data: z.infer<typeof formSchema>) => {
         setPending(true);
         setError(null);
-        authClient.signUp.email(
+        authClient.signIn.email(
             {
-                name: data.name,
                 email: data.email,
                 password: data.password,
-                callbackURL: '/citizen/dashboard'
             },
             {
                 onSuccess: () => {
-                    toast.success('Account created successfully!');
+                    toast.success('Signed in successfully!');
                     setPending(false);
+                    router.push('/citizen/dashboard');
                 },
                 onError: (error) => {
-                    toast.error(error.error.message || 'Sign-up failed. Please try again.');
+                    toast.error(error.error.message || 'Sign-in failed. Please try again.');
                     setPending(false);
                 }
             }
