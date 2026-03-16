@@ -3,13 +3,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import React from 'react'
 import Image from 'next/image';
-import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 const PostIssue = () => {
     return (
         <>
-            <div className='px-4 md:px-12'>
+            <div className='px-4 md:px-12 mb-18'>
                 <div className="flex flex-row items-center justify-center gap-8 mt-4">
                     <Card
                         className="w-full flex flex-row items-center justify-center dark:bg-[#121212] px-4 py-6"
