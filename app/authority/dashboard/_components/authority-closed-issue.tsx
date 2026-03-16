@@ -20,7 +20,7 @@ const AuthorityClosedIssue = () => {
 
 
             {issues.length === 0 ? (
-                <div className='flex flex-col items-center justify-center gap-4 py-12'>
+                <div className='flex flex-col items-center justify-center gap-4 min-h-[50vh]'>
                     <EmptyState />
                     <p className='mt-4 text-sm text-center'>No closed issues found.</p>
                 </div>

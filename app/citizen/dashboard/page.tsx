@@ -1,14 +1,12 @@
-import React, { Suspense } from 'react'
+import React from 'react'
 import PostIssue from './_components/post-issue'
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import { getQueryClient, trpc } from '@/trpc/server'
 import { ErrorBoundary } from "react-error-boundary"
-import { LoaderFive } from '@/components/ui/loader'
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
 import { ErrorState } from '@/components/ui/error'
-import CitizenOpenIssue from './_components/citizen-open-issue'
-import CitizenClosedIssue from './_components/citizen-closed-issue'
+import CitizenTabs from './_components/citizen-tabs'
 
 const page = () => {
 
@@ -27,56 +25,16 @@ const page = () => {
                 </Button>
             </div>
             <PostIssue />
-            <div className='px-4 md:px-12 mt-6'>
-                <Button
-                    className="group max-w-max text-sm text-yellow-500"
-                    variant={"link"}
-                >
-                    <span className='underline'>View Open Issues</span>
-                    <ArrowRight className='group-hover:translate-x-1 transition-transform' />
-                </Button>
-            </div>
-            <HydrationBoundary state={dehydrate(queryClient)}>
-                <Suspense fallback={
-                    <div className='flex flex-col items-center justify-center gap-4 py-18'>
-                        <LoaderFive text="Loading open issues..." />
-                    </div>
-                }>
-                    <ErrorBoundary fallback={
-                        <div
-                            className='px-4 md:px-12 text-center justify-center flex mt-18 text-red-500'>
-                            <ErrorState />
-                        </div>
-                    }>
-                        <CitizenOpenIssue />
-                    </ErrorBoundary>
-                </Suspense>
-            </HydrationBoundary>
-            <div className='px-4 md:px-12 mt-6'>
-                <Button
-                    className="group max-w-max text-sm text-green-500"
-                    variant={"link"}
-                >
-                    <span className='underline'>Closed Issues</span>
-                    <ArrowRight className='group-hover:translate-x-1 transition-transform' />
-                </Button>
-            </div>
 
             <HydrationBoundary state={dehydrate(queryClient)}>
-                <Suspense fallback={
-                    <div className='flex flex-col items-center justify-center gap-4 py-18'>
-                        <LoaderFive text="Loading closed issues..." />
+                <ErrorBoundary fallback={
+                    <div
+                        className='px-4 md:px-12 text-center justify-center flex mt-18 text-red-500'>
+                        <ErrorState />
                     </div>
                 }>
-                    <ErrorBoundary fallback={
-                        <div
-                            className='px-4 md:px-12 text-center justify-center flex mt-18 text-red-500'>
-                            <ErrorState />
-                        </div>
-                    }>
-                        <CitizenClosedIssue />
-                    </ErrorBoundary>
-                </Suspense>
+                    <CitizenTabs />
+                </ErrorBoundary>
             </HydrationBoundary>
         </div>
     )
