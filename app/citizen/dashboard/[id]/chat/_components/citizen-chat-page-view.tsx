@@ -45,11 +45,6 @@ export default function Chat({ issueId }: ChatProps) {
         trpc.message.getMessages.queryOptions({ issueId })
     )
 
-    // const id = initialMessages?.[0]?.senderId || "";
-    // const { data: userData } = useQuery(
-    //     trpc.user.getUserById.queryOptions({ id })
-    // )
-
     useEffect(() => {
         if (initialMessages) {
             // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -258,9 +253,6 @@ export default function Chat({ issueId }: ChatProps) {
 
                                     )}
                                 </Button>
-
-                                {/* Bottom Bar */}
-                                {/* <div className="flex items-center justify-between"> */}
 
                                 {/* Send Button */}
                                 <Button className="flex items-center justify-center max-w-max rounded-md bg-[#1F63B9] cursor-pointer hover:bg-[#1F63B9]/90"
