@@ -221,38 +221,42 @@ export default function AuthorityChat({ issueId }: AuthorityChatProps) {
                             />
                             <div className="flex justify-between items-center w-full">
 
-                                <Button
-                                    variant={"outline"}
-                                    className={`relative group flex items-center justify-center ${image ? "h-8.5 w-20" : "w-8.5 h-8.5"} rounded-md border cursor-pointer overflow-hidden p-0`}
-                                    onClick={() => setIsDialogOpen(true)}
-                                >
-                                    {image ? (
-                                        <div className="w-full h-full">
-                                            <Image
-                                                src={image}
-                                                alt="uploaded image"
-                                                width={120}
-                                                height={120}
-                                                className="w-full h-full object-cover rounded-md"
-                                            />
-                                            <Button
-                                                size={"icon"}
-                                                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-6 h-6 flex items-center justify-center rounded cursor-pointer p-2 px-3 group-hover:opacity-100 opacity-0"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setImage(null);
-                                                }}
-                                            >
-                                                <X size={8} />
-                                            </Button>
-                                        </div>
-                                    ) : (
-                                        <div className="p-2">
-                                            <ImagePlus size={12} />
-                                        </div>
+                                <div className="relative group">
+                                    <Button
+                                        variant={"outline"}
+                                        className={`flex items-center justify-center ${image ? "h-8.5 w-20" : "w-8.5 h-8.5"} rounded-md border cursor-pointer overflow-hidden p-0`}
+                                        onClick={() => setIsDialogOpen(true)}
+                                    >
+                                        {image ? (
+                                            <div className="w-full h-full">
+                                                <Image
+                                                    src={image}
+                                                    alt="uploaded image"
+                                                    width={120}
+                                                    height={120}
+                                                    className="w-full h-full object-cover rounded-md"
+                                                />
+                                            </div>
+                                        ) : (
+                                            <div className="p-2">
+                                                <ImagePlus size={12} />
+                                            </div>
+                                        )}
+                                    </Button>
 
+                                    {image && (
+                                        <Button
+                                            size={"icon"}
+                                            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-6 h-6 flex items-center justify-center rounded cursor-pointer p-2 px-3 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setImage(null);
+                                            }}
+                                        >
+                                            <X size={8} />
+                                        </Button>
                                     )}
-                                </Button>
+                                </div>
 
                                 {/* Send Button */}
                                 <Button className="flex items-center justify-center max-w-max rounded-md bg-[#1F63B9] cursor-pointer hover:bg-[#1F63B9]/90"
