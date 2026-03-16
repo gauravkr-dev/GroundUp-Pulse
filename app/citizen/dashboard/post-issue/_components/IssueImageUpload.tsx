@@ -7,6 +7,7 @@ import Image from "next/image"
 import { UploadButton } from "@/utils/uploadthing"
 import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
 
 interface Props {
     onChange: (urls: string[]) => void
@@ -78,7 +79,7 @@ export default function IssueImageUpload({ onChange }: Props) {
 
                     }}
                     onUploadError={(error: Error) => {
-                        alert(`ERROR! ${error.message}`)
+                        toast.error("Upload failed: " + error.message)
                     }}
                     appearance={{
                         button:

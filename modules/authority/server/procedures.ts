@@ -13,6 +13,7 @@ export const issueRouter = createTRPCRouter({
                 .from(postIssue)
                 .where(
                     and(
+                        eq(postIssue.emergency, false),
                         eq(postIssue.department, ctx.auth.user.department || ""),
                         or(
                             eq(postIssue.status, "open"),

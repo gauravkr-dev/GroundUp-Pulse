@@ -11,6 +11,7 @@ import Image from 'next/image';
 import React, { useState } from 'react'
 import Link from 'next/link';
 import IssueMap from '@/app/citizen/dashboard/[id]/_components/issue-map-detail';
+import { redirect } from 'next/navigation';
 
 interface AuthorityDetailIssueViewProps {
     id: string;
@@ -82,7 +83,9 @@ const AuthorityDetailIssueView = ({ id }: AuthorityDetailIssueViewProps) => {
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <div>
-                                    <Button className='cursor-pointer rounded-md' variant={"outline"}>
+                                    <Button className='cursor-pointer rounded-md' variant={"outline"} onClick={() => {
+                                        redirect(`/authority/dashboard/${id}/chat`)
+                                    }}>
                                         <MessagesSquare />
                                     </Button>
                                 </div>

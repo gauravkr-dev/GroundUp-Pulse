@@ -8,7 +8,7 @@ const Layout = ({ children }: LayoutProps) => {
     return (
         <div>
             <CitizenHeader />
-            <div className='mt-28'>
+            <div className='mt-24'>
                 {children}
             </div>
         </div>
