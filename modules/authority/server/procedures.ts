@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { postIssue } from "@/db/schema";
+import { postIssue, user } from "@/db/schema";
 import { authorityProcedure, createTRPCRouter } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
 import { eq, or, and } from "drizzle-orm";
@@ -9,8 +9,24 @@ export const issueRouter = createTRPCRouter({
     getMany: authorityProcedure
         .query(async ({ ctx }) => {
             const data = await db
-                .select()
+                .select(
+                    {
+                        id: postIssue.id,
+                        title: postIssue.title,
+                        describe_issue: postIssue.describe_issue,
+                        createdAt: postIssue.createdAt,
+                        status: postIssue.status,
+                        priority_score: postIssue.priority_score,
+                        emergency: postIssue.emergency,
+                        user: {
+                            id: user.id,
+                            name: user.name,
+                            image: user.image,
+                        }
+                    }
+                )
                 .from(postIssue)
+                .leftJoin(user, eq(postIssue.userId, user.id))
                 .where(
                     and(
                         eq(postIssue.emergency, false),
@@ -33,8 +49,29 @@ export const issueRouter = createTRPCRouter({
         .input(z.object({ id: z.string() }))
         .query(async ({ ctx, input }) => {
             const [data] = await db
-                .select()
+                .select(
+                    {
+                        id: postIssue.id,
+                        title: postIssue.title,
+                        describe_issue: postIssue.describe_issue,
+                        createdAt: postIssue.createdAt,
+                        status: postIssue.status,
+                        priority_score: postIssue.priority_score,
+                        emergency: postIssue.emergency,
+                        images: postIssue.images,
+                        department: postIssue.department,
+                        latitude: postIssue.latitude,
+                        longitude: postIssue.longitude,
+                        address: postIssue.address,
+                        user: {
+                            id: user.id,
+                            name: user.name,
+                            image: user.image,
+                        }
+                    }
+                )
                 .from(postIssue)
+                .leftJoin(user, eq(postIssue.userId, user.id))
                 .where(
                     and(
                         eq(postIssue.department, ctx.auth.user.department || ""),
@@ -52,8 +89,24 @@ export const issueRouter = createTRPCRouter({
     getManyClosed: authorityProcedure
         .query(async ({ ctx }) => {
             const data = await db
-                .select()
+                .select(
+                    {
+                        id: postIssue.id,
+                        title: postIssue.title,
+                        describe_issue: postIssue.describe_issue,
+                        createdAt: postIssue.createdAt,
+                        status: postIssue.status,
+                        priority_score: postIssue.priority_score,
+                        emergency: postIssue.emergency,
+                        user: {
+                            id: user.id,
+                            name: user.name,
+                            image: user.image,
+                        }
+                    }
+                )
                 .from(postIssue)
+                .leftJoin(user, eq(postIssue.userId, user.id))
                 .where(
                     and(
                         eq(postIssue.department, ctx.auth.user.department || ""),
@@ -74,8 +127,24 @@ export const issueRouter = createTRPCRouter({
     getEmergencyIssue: authorityProcedure
         .query(async ({ ctx }) => {
             const data = await db
-                .select()
+                .select(
+                    {
+                        id: postIssue.id,
+                        title: postIssue.title,
+                        describe_issue: postIssue.describe_issue,
+                        createdAt: postIssue.createdAt,
+                        status: postIssue.status,
+                        priority_score: postIssue.priority_score,
+                        emergency: postIssue.emergency,
+                        user: {
+                            id: user.id,
+                            name: user.name,
+                            image: user.image,
+                        }
+                    }
+                )
                 .from(postIssue)
+                .leftJoin(user, eq(postIssue.userId, user.id))
                 .where(
                     and(
                         eq(postIssue.emergency, true),
