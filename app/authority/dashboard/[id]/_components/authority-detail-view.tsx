@@ -2,7 +2,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { authClient } from '@/lib/auth-client';
 import { useTRPC } from '@/trpc/client';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
@@ -18,14 +17,10 @@ interface AuthorityDetailIssueViewProps {
 }
 
 const AuthorityDetailIssueView = ({ id }: AuthorityDetailIssueViewProps) => {
-    const { data, isPending } = authClient.useSession();
     const [currentImage, setCurrentImage] = useState(0)
     const trpc = useTRPC();
     const { data: issue } = useSuspenseQuery(trpc.issue.getOne.queryOptions({ id }));
 
-    if (isPending || !data?.user) {
-        return null
-    }
     const nextImage = () => {
         setCurrentImage((prev) =>
             prev === issue.images.length - 1 ? 0 : prev + 1
@@ -39,16 +34,16 @@ const AuthorityDetailIssueView = ({ id }: AuthorityDetailIssueViewProps) => {
                 <div className='flex flex-row items-center gap-2 text-sm md:text-base '>
                     <Avatar className="h-8 w-8 rounded-lg">
                         <AvatarImage
-                            src={data.user.image || ''}
-                            alt={data.user.name}
+                            src={issue.user?.image || ''}
+                            alt={issue.user?.name}
                         />
                         <AvatarFallback className="rounded-lg">
-                            {data.user.name?.slice(0, 2).toUpperCase()}
+                            {issue.user?.name?.slice(0, 2).toUpperCase()}
                         </AvatarFallback>
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight">
                         <span className="truncate font-medium">
-                            {data.user.name}
+                            {issue.user?.name}
                         </span>
                         <span className="truncate text-xs text-muted-foreground">
                             <p className="text-xs text-muted-foreground truncate">{formatDistanceToNow(new Date(issue.createdAt), { addSuffix: true, })}</p>
