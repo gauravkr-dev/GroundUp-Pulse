@@ -11,6 +11,7 @@ import Image from 'next/image';
 import React, { useState } from 'react'
 import IssueMap from './issue-map-detail';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 interface DetailIssueViewProps {
     id: string;
@@ -82,7 +83,9 @@ const DetailIssueView = ({ id }: DetailIssueViewProps) => {
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <div>
-                                    <Button className='cursor-pointer rounded-md' variant={"outline"}>
+                                    <Button className='cursor-pointer rounded-md' variant={"outline"} onClick={() => {
+                                        redirect(`/citizen/dashboard/${id}/chat`)
+                                    }}>
                                         <MessagesSquare />
                                     </Button>
                                 </div>

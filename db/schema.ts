@@ -149,3 +149,20 @@ export const postIssue = pgTable("post_issue", {
         .$onUpdate(() => /* @__PURE__ */ new Date())
         .notNull(),
 })
+
+export const messages = pgTable("messages", {
+    id: text("id").primaryKey().$default(() => nanoid()),
+    issueId: text("issue_id")
+        .notNull()
+        .references(() => postIssue.id, { onDelete: "cascade" }),
+    senderId: text("sender_id").notNull(),
+    role: text("role", {
+        enum: ["citizen", "authority"]
+    }).notNull(),
+    text: text("text"),
+    imageUrl: text("image_url"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+        .$onUpdate(() => /* @__PURE__ */ new Date())
+        .notNull(),
+})
