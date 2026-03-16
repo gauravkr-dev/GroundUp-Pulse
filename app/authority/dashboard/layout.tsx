@@ -8,7 +8,7 @@ const Layout = ({ children }: LayoutProps) => {
     return (
         <div>
             <AuthorityHeader />
-            <div className='mt-28'>
+            <div className='mt-24'>
                 {children}
             </div>
         </div>

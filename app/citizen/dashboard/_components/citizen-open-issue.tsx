@@ -9,6 +9,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 import { ArrowRight, MessagesSquare } from 'lucide-react'
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import React from 'react'
 const CitizenOpenIssue = () => {
     const { data, isPending } = authClient.useSession();
@@ -81,25 +82,41 @@ const CitizenOpenIssue = () => {
                                     <Tooltip>
                                         <TooltipTrigger asChild>
                                             <div>
-                                                <Button className='cursor-pointer rounded-md' variant={"outline"}>
+                                                <Button className='cursor-pointer rounded-md' variant={"outline"} onClick={() => {
+                                                    redirect(`/citizen/dashboard/${issue.id}/chat`)
+                                                }}>
                                                     <MessagesSquare />
                                                 </Button>
                                             </div>
                                         </TooltipTrigger>
                                         <TooltipContent>
-                                            <p>Message to authority</p>
+                                            <p>Message to Authority</p>
                                         </TooltipContent>
                                     </Tooltip>
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <Button className='cursor-pointer rounded-md text-red-500' variant={"outline"}>
-                                                {issue.priority_score}%
-                                            </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent>
-                                            <p>Priority Score</p>
-                                        </TooltipContent>
-                                    </Tooltip>
+                                    {issue.emergency ? (
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <Button className='cursor-pointer rounded-md text-red-500' variant={"outline"}>
+                                                    <p className="text-lg">🔥</p>
+                                                </Button>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <p>Emergency</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    ) : (
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <Button className='cursor-pointer rounded-md text-red-500' variant={"outline"}>
+                                                    {issue.priority_score}%
+                                                </Button>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <p>Priority Score</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    )}
+
                                 </div>
                             </div>
                             {/* // Title and description */}

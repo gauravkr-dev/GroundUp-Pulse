@@ -91,7 +91,7 @@ const AuthorityDetailIssueView = ({ id }: AuthorityDetailIssueViewProps) => {
                                 </div>
                             </TooltipTrigger>
                             <TooltipContent>
-                                <p>Message to authority</p>
+                                <p>Message to Citizen</p>
                             </TooltipContent>
                         </Tooltip>
                         <Tooltip>

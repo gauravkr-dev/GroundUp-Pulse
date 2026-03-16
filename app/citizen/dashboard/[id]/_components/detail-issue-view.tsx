@@ -91,19 +91,32 @@ const DetailIssueView = ({ id }: DetailIssueViewProps) => {
                                 </div>
                             </TooltipTrigger>
                             <TooltipContent>
-                                <p>Message to authority</p>
+                                <p>Message to Authority</p>
                             </TooltipContent>
                         </Tooltip>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button className='cursor-pointer rounded-md text-red-500' variant={"outline"}>
-                                    {issue.priority_score}%
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>Priority Score</p>
-                            </TooltipContent>
-                        </Tooltip>
+                        {issue.emergency ? (
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button className='cursor-pointer rounded-md text-red-500' variant={"outline"}>
+                                        <p className="text-lg">🔥</p>
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Emergency</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        ) : (
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button className='cursor-pointer rounded-md text-red-500' variant={"outline"}>
+                                        {issue.priority_score}%
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                    <p>Priority Score</p>
+                                </TooltipContent>
+                            </Tooltip>
+                        )}
                     </div>
 
                 </div>

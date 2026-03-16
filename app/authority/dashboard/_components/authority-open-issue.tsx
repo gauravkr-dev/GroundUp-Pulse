@@ -9,6 +9,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 import { ArrowRight, MessagesSquare } from 'lucide-react'
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import React from 'react'
 const AuthorityOpenIssue = () => {
     const { data, isPending } = authClient.useSession();
@@ -81,13 +82,15 @@ const AuthorityOpenIssue = () => {
                                     <Tooltip>
                                         <TooltipTrigger asChild>
                                             <div>
-                                                <Button className='cursor-pointer rounded-md' variant={"outline"}>
+                                                <Button className='cursor-pointer rounded-md' variant={"outline"} onClick={() => {
+                                                    redirect(`/authority/dashboard/${issue.id}/chat`)
+                                                }}>
                                                     <MessagesSquare />
                                                 </Button>
                                             </div>
                                         </TooltipTrigger>
                                         <TooltipContent>
-                                            <p>Message to authority</p>
+                                            <p>Message to Citizen</p>
                                         </TooltipContent>
                                     </Tooltip>
                                     <Tooltip>
