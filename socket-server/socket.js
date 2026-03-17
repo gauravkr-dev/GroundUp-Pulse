@@ -23,6 +23,16 @@ io.on("connection", (socket) => {
         io.to(data.roomId).emit("receive-message", data)
     });
 
+    // Listen for "message-delivered" events and broadcast the delivery status to all sockets in the specified room
+    socket.on("message-delivered", (data) => {
+        io.to(data.roomId).emit("message-delivered", data)
+    });
+
+    // Listen for "message-seen" events and broadcast the seen status to all sockets in the specified room
+    socket.on("message-seen", (data) => {
+        io.to(data.roomId).emit("message-seen", data)
+    });
+
     // Listen for "disconnect" events and log when a user disconnects
     socket.on("disconnect", () => {
         console.log("A user disconnected: " + socket.id);

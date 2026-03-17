@@ -17,6 +17,7 @@ interface Message {
     imageUrl?: string;
     senderRole: "citizen" | "authority";
     createdAt?: string;
+    status?: "sent" | "delivered" | "seen";
 }
 
 interface AuthorityChatProps {
@@ -41,10 +42,18 @@ export default function AuthorityChat({ issueId }: AuthorityChatProps) {
             },
         })
     );
+    const updateMessageStatusMutation = useMutation(
+        trpc.message.updateMessageStatus.mutationOptions({
+            onError: (error) => {
+                toast.error("Failed to update message status: " + error.message);
+            },
+        })
+    );
     const { data: initialMessages, isLoading } = useSuspenseQuery(
         trpc.message.getMessages.queryOptions({ issueId })
     )
 
+    // Initialize messages on component mount
     useEffect(() => {
         if (initialMessages) {
             // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -54,15 +63,41 @@ export default function AuthorityChat({ issueId }: AuthorityChatProps) {
                     senderRole: msg.role,
                     text: msg.text ?? undefined,
                     imageUrl: msg.imageUrl ?? undefined,
+                    status: msg.status as "sent" | "delivered" | "seen",
                 }))
             );
         }
     }, [initialMessages]);
 
+    // Listen for incoming messages and message status updates
     useEffect(() => {
+
         socket.emit("join-room", issueId);
+
         const handleMessage = (msg: Message) => {
-            setMessages((prev) => [...prev, msg]);
+
+            setMessages(prev => {
+                if (msg.id && prev.some(m => m.id === msg.id)) {
+                    return prev;
+                }
+                return [...prev, msg]
+            });
+
+            // mark delivered
+            if (msg.id) {
+
+                socket.emit("message-delivered", {
+                    roomId: issueId,
+                    messageId: msg.id
+                });
+
+                updateMessageStatusMutation.mutate({
+                    messageId: msg.id,
+                    status: "delivered"
+                });
+
+            }
+
         };
 
         socket.on("receive-message", handleMessage);
@@ -71,34 +106,113 @@ export default function AuthorityChat({ issueId }: AuthorityChatProps) {
             socket.off("receive-message", handleMessage);
         };
 
-    }, [issueId]);
+    }, [issueId, updateMessageStatusMutation]);
 
+    // Function to send a message
     const sendMessage = async () => {
 
         try {
-            const message = {
+
+            const saved = await sendMessageMutation.mutateAsync({
                 issueId,
                 text: text.trim() || undefined,
                 imageUrl: image ?? undefined,
-            };
+            });
 
-            await sendMessageMutation.mutateAsync(message);
+            const msg = Array.isArray(saved) ? saved[0] : saved;
+
+            setMessages(prev => [...prev, {
+                ...msg,
+                senderRole: "authority",
+                text: msg.text ?? undefined,
+                imageUrl: msg.imageUrl ?? undefined,
+                status: "sent",
+            }]);
 
             socket.emit("send-message", {
-                roomId: issueId,
-                text: text.trim() || undefined,
-                senderRole: "authority",
-                imageUrl: image,
+                ...msg,
+                roomId: issueId
             });
 
             setText("");
             setImage(null);
+
         } catch (err) {
-            console.error("Error sending message:", err);
+            console.error(err);
         }
 
     };
 
+    // Listen for message delivery status updates
+    useEffect(() => {
+
+        const handleDelivered = (data: { messageId: string }) => {
+
+            setMessages(prev =>
+                prev.map(m =>
+                    m.id === data.messageId
+                        ? { ...m, status: "delivered" }
+                        : m
+                )
+            );
+
+        };
+
+        socket.on("message-delivered", handleDelivered);
+
+        return () => {
+            socket.off("message-delivered", handleDelivered);
+        };
+
+    }, []);
+
+    useEffect(() => {
+
+        messages.forEach(msg => {
+
+            if (msg.senderRole !== "authority" && msg.status !== "seen" && msg.id) {
+
+                socket.emit("message-seen", {
+                    roomId: issueId,
+                    messageId: msg.id
+                });
+
+                updateMessageStatusMutation.mutate({
+                    messageId: msg.id,
+                    status: "seen"
+                });
+
+            }
+
+        });
+
+    }, [messages, issueId, updateMessageStatusMutation]);
+
+
+    useEffect(() => {
+
+        const handleSeen = (data: { messageId: string }) => {
+
+            setMessages(prev =>
+                prev.map(m =>
+                    m.id === data.messageId
+                        ? { ...m, status: "seen" }
+                        : m
+                )
+            );
+
+        };
+
+        socket.on("message-seen", handleSeen);
+
+        return () => {
+            socket.off("message-seen", handleSeen);
+        };
+
+    }, []);
+
+
+    // Scroll to bottom when messages change
     useEffect(() => {
         if (!containerRef.current) return;
         containerRef.current.scrollTop = containerRef.current.scrollHeight;
@@ -169,6 +283,7 @@ export default function AuthorityChat({ issueId }: AuthorityChatProps) {
                                 return (
                                     <div
                                         key={m.id || i}
+                                        data-msg-id={m.id}
                                         className={`flex flex-col ${isAuthority ? "items-end" : "items-start"}`}
                                     >
                                         <div className="max-w-[70%]">
@@ -184,21 +299,32 @@ export default function AuthorityChat({ issueId }: AuthorityChatProps) {
 
                                             {m.text && (
                                                 <div
-                                                    className={`rounded-lg px-4 py-2 text-sm my-2 ${isAuthority ? "border-[#1F63B9] border bg-[#1F63B9] text-white" : "border bg-gray-100 text-gray-800 dark:bg-[#121212] dark:text-white"}`}
+                                                    className={`rounded-lg px-4 py-2 text-sm mt-2 ${isAuthority ? "border-[#1F63B9] border bg-[#1F63B9] text-white" : "border bg-gray-100 text-gray-800 dark:bg-[#121212] dark:text-white"}`}
                                                 >
                                                     <p>{m.text}</p>
                                                 </div>
                                             )}
+                                            <div className="flex flex-row gap-1 justify-end items-center">
+                                                {m.createdAt && (
+                                                    <p className={`text-[10px] opacity-70 mt-0 text-right`}>
+                                                        {new Date(m.createdAt).toLocaleTimeString("en-IN", {
+                                                            hour: "numeric",
+                                                            minute: "2-digit",
+                                                            hour12: true,
+                                                        })}
+                                                    </p>
+                                                )}
+                                                {
+                                                    isAuthority && (
+                                                        <span className={`text-[10px] opacity-70 mt-0 text-right ${m.status === "seen" ? "text-blue-500" : ""}`}>
+                                                            {m.status === "sent" && "✓"}
+                                                            {m.status === "delivered" && "✓✓"}
+                                                            {m.status === "seen" && "✓✓"}
+                                                        </span>
+                                                    )
+                                                }
 
-                                            {m.createdAt && (
-                                                <p className={`text-[10px] opacity-70 mt-1 text-right`}>
-                                                    {new Date(m.createdAt).toLocaleTimeString("en-IN", {
-                                                        hour: "numeric",
-                                                        minute: "2-digit",
-                                                        hour12: true,
-                                                    })}
-                                                </p>
-                                            )}
+                                            </div>
                                         </div>
                                     </div>
                                 );
