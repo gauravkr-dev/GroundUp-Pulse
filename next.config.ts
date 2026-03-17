@@ -9,9 +9,11 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/**",
       },
+      // uploadthing serves files from dynamic UFS subdomains like "<id>.ufs.sh".
+      // Allow any subdomain under ufs.sh so images returned by UploadThing load correctly.
       {
         protocol: "https",
-        hostname: "f8ohca5phj.ufs.sh",
+        hostname: "**.ufs.sh",
         port: "",
         pathname: "/**",
       },

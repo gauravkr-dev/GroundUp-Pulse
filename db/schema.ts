@@ -161,6 +161,9 @@ export const messages = pgTable("messages", {
     }).notNull(),
     text: text("text"),
     imageUrl: text("image_url"),
+    status: text("status", {
+        enum: ["sent", "delivered", "seen"]
+    }).default("sent"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
         .$onUpdate(() => /* @__PURE__ */ new Date())

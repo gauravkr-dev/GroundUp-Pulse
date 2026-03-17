@@ -39,4 +39,18 @@ export const messageRouter = createTRPCRouter({
                 .orderBy(asc(messages.createdAt));
             return msgs;
         }),
+
+    updateMessageStatus: protectedProcedure
+        .input(z.object({
+            messageId: z.string(),
+            status: z.enum(["sent", "delivered", "seen"])
+        }))
+        .mutation(async ({ input }) => {
+            const updatedMessage = await db
+                .update(messages)
+                .set({ status: input.status })
+                .where(eq(messages.id, input.messageId))
+                .returning();
+            return updatedMessage;
+        }),
 })
