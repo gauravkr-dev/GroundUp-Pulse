@@ -1,7 +1,7 @@
 import { db } from "@/db";
 import { messages } from "@/db/schema";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
-import { eq, asc } from "drizzle-orm";
+import { eq, asc, and, ne } from "drizzle-orm";
 import z from "zod";
 
 export const messageRouter = createTRPCRouter({
@@ -53,4 +53,43 @@ export const messageRouter = createTRPCRouter({
                 .returning();
             return updatedMessage;
         }),
+
+    // getUnreadStatus: protectedProcedure
+    //     .input(z.object({
+    //         issueId: z.string(),
+    //         role: z.enum(["citizen", "authority"])
+    //     }))
+    //     .query(async ({ input }) => {
+    //         const unreadMessages = await db
+    //             .select()
+    //             .from(messages)
+    //             .where(
+    //                 and(
+    //                     eq(messages.issueId, input.issueId),
+    //                     ne(messages.status, "seen"),
+    //                     ne(messages.role, input.role)
+    //                 )
+    //             );
+    //         return unreadMessages.length > 0;
+    //     }
+    //     ),
+
+    getUnreadIssues: protectedProcedure
+        .input(z.object({
+            role: z.enum(["citizen", "authority"])
+        }))
+        .query(async ({ input }) => {
+            const unreadMessages = await db
+                .select({ issueId: messages.issueId })
+                .from(messages)
+                .where(
+                    and(
+                        ne(messages.status, "seen"),
+                        ne(messages.role, input.role)
+                    )
+                )
+                .groupBy(messages.issueId);
+            return unreadMessages.map(m => m.issueId);
+        }
+        ),
 })
