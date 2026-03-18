@@ -6,7 +6,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
 import { Skeleton } from '@/components/ui/skeleton';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { authClient } from '@/lib/auth-client';
-import { LogOut, StarIcon } from 'lucide-react';
+import { LayoutDashboard, LogOut, StarIcon } from 'lucide-react';
 import Image from 'next/image'
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -77,14 +77,14 @@ const AuthorityHeader = () => {
                 <div className='flex flex-row items-center gap-4 md:gap-8'>
                     <div className='flex flex-row items-center gap-4 text-sm md:text-base '>
                         {isMobile ? (
-                            <Link href="/citizen/achievements" className="rounded-full flex items-center justify-center p-1.5 size-8  cursor-pointer bg-white-500 text-black-500 border border hover:bg-muted hover:text-foreground">
+                            <Link href="/authority/dashboard/overview" className="rounded-full flex items-center justify-center p-1.5 size-8  cursor-pointer bg-white-500 text-black-500 border border hover:bg-muted hover:text-foreground">
                                 <StarIcon className="text-yellow-500" />
                             </Link>
                         ) : (
-                            <Link href="/citizen/achievements" className="">
+                            <Link href="/authority/dashboard/overview" className="">
                                 <Button className='gap-2 rounded-full dark:bg-black-500 cursor-pointer' variant={"outline"}>
-                                    <StarIcon className="text-yellow-500" />
-                                    <span>Achievement</span>
+                                    <LayoutDashboard className="text-yellow-500 size-4  " />
+                                    <span>Overview</span>
                                 </Button>
                             </Link>
                         )}
