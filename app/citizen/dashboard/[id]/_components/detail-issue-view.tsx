@@ -164,19 +164,17 @@ const DetailIssueView = ({ id }: DetailIssueViewProps) => {
 
                     {/* NEXT IMAGE BUTTON */}
                     {issue.images.length > 1 && (
-                        <Button
+                        <button
                             onClick={nextImage}
                             className="
-                                        absolute right-3 top-1/2 -translate-y-1/2
-                                        cursor-pointer
-                                       rounded-md
+                                        absolute right-1 top-1/2 -translate-y-1/2 
+                                        cursor-pointer border border p-2 bg-blue-500/80
+                                       rounded-full 
                                         shadow-md
-                                        hover:scale-110
-                                        transition
-        "
+                                        transition"
                         >
                             <ChevronRight className="size-5 dark:text-foreground" />
-                        </Button>
+                        </button>
                     )}
 
                 </div>
@@ -195,8 +193,8 @@ const DetailIssueView = ({ id }: DetailIssueViewProps) => {
                                 className="object-contain"
                             />
                         </span>
-                        <span className="underline text-sm">Open in Google Maps</span>
-                        <span> <ArrowRight className="group-hover:translate-x-1 transition-transform size-4 ml-1" /> </span>
+                        <span className="underline text-sm group-hover:text-blue-500">Open in Google Maps</span>
+                        <span> <ArrowRight className="group-hover:translate-x-1 group-hover:text-blue-500 transition-transform size-4 ml-1" /> </span>
                     </Link>
                     <div className='flex flex-row items-start text-sm gap-2'>
                         <MapPin className="size-5 text-green-500" />
