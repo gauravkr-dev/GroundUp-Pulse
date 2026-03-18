@@ -1,12 +1,13 @@
 import { postIssueRouter } from '@/modules/citizen/server/procedures';
 import { createTRPCRouter } from '../init';
-import { issueRouter } from '@/modules/authority/server/procedures';
+import { authorityRouter, issueRouter } from '@/modules/authority/server/procedures';
 import { messageRouter } from '@/modules/messages/server/procedures';
 
 export const appRouter = createTRPCRouter({
     postIssue: postIssueRouter,
     issue: issueRouter,
     message: messageRouter,
+    authority: authorityRouter,
 });
 
 // export type definition of API

@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { db } from "@/db";
 import { postIssue, user } from "@/db/schema";
 import { authorityProcedure, createTRPCRouter } from "@/trpc/init";
 import { TRPCError } from "@trpc/server";
-import { eq, or, and } from "drizzle-orm";
+import { eq, or, and, count } from "drizzle-orm";
 import z from "zod";
 
 export const issueRouter = createTRPCRouter({
@@ -159,6 +160,107 @@ export const issueRouter = createTRPCRouter({
                 throw new TRPCError({
                     code: "FORBIDDEN",
                     message: "You don't have access to these issues.",
+                });
+            }
+            return data;
+        }),
+
+    getStats: authorityProcedure
+        .query(async ({ ctx }) => {
+            const [opened] = await db
+                .select({ value: count() })
+                .from(postIssue)
+                .where(
+                    and(
+                        eq(postIssue.department, ctx.auth.user.department || ""),
+                        eq(postIssue.status, "open")
+                    )
+                )
+            const [assigned] = await db
+                .select({ value: count() })
+                .from(postIssue)
+                .where(
+                    and(
+                        eq(postIssue.department, ctx.auth.user.department || ""),
+                        eq(postIssue.status, "assigned")
+                    )
+                )
+            const [resolved] = await db
+                .select({ value: count() })
+                .from(postIssue)
+                .where(
+                    and(
+                        eq(postIssue.department, ctx.auth.user.department || ""),
+                        eq(postIssue.status, "resolved")
+                    )
+                )
+            const [rejected] = await db
+                .select({ value: count() })
+                .from(postIssue)
+                .where(
+                    and(
+                        eq(postIssue.department, ctx.auth.user.department || ""),
+                        eq(postIssue.status, "rejected")
+                    )
+                )
+            return {
+                opened: opened.value,
+                assigned: assigned.value,
+                resolved: resolved.value,
+                rejected: rejected.value,
+            }
+        }),
+})
+
+
+export const authorityRouter = createTRPCRouter({
+    user: authorityProcedure
+        .query(async ({ ctx }) => {
+            const data = await db
+                .select({
+                    id: user.id,
+                    name: user.name,
+                    email: user.email,
+                    image: user.image,
+                    department: user.department,
+                })
+                .from(user)
+                .where(eq(user.id, ctx.auth.user.id))
+            if (!data || data.length === 0) {
+                throw new TRPCError({
+                    code: "FORBIDDEN",
+                    message: "User not found.",
+                });
+            }
+            return data[0];
+        }),
+
+    users: authorityProcedure
+        .query(async ({ ctx }) => {
+            const dept = ctx.auth.user.department;
+            if (!dept) {
+                throw new TRPCError({
+                    code: "FORBIDDEN",
+                    message: "No department associated with your account.",
+                });
+            }
+            const data = await db
+                .select({
+                    id: user.id,
+                    name: user.name,
+                    email: user.email,
+                    image: user.image,
+                    department: user.department,
+                    createdAt: user.createdAt,
+                })
+                .from(user)
+                .where(
+                    eq(user.department, dept as any)
+                )
+            if (!data) {
+                throw new TRPCError({
+                    code: "FORBIDDEN",
+                    message: "No users found in your department.",
                 });
             }
             return data;
