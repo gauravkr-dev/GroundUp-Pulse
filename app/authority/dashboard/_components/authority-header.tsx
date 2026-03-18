@@ -70,7 +70,9 @@ const AuthorityHeader = () => {
         <div className={`fixed top-0 left-0 z-20 w-full transition-all duration-300 backdrop-blur-sm ${scrolled ? 'border-b' : 'border-b-0'}`}>
             <div className="flex flex-row justify-between items-center px-4 md:px-12 my-2">
                 <div>
-                    <Image src="/groundup_pulse2.png" alt="GroundUp Pulse Logo" width={120} height={80} />
+                    <Link href="/authority/dashboard" className='cursor-pointer'>
+                        <Image src="/groundup_pulse2.png" alt="GroundUp Pulse Logo" width={120} height={80} />
+                    </Link>
                 </div>
                 <div className='flex flex-row items-center gap-4 md:gap-8'>
                     <div className='flex flex-row items-center gap-4 text-sm md:text-base '>

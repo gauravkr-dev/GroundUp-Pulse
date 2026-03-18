@@ -15,6 +15,12 @@ const AuthorityOpenIssue = () => {
     const trpc = useTRPC();
 
     const { data: issues } = useSuspenseQuery(trpc.issue.getMany.queryOptions());
+
+    const { data: unreadInnsues } = useSuspenseQuery(
+        trpc.message.getUnreadIssues.queryOptions({
+            role: "authority"
+        })
+    )
     return (
         <div className='my-8 px-4 md:px-12'>
 
@@ -76,12 +82,24 @@ const AuthorityOpenIssue = () => {
                                     </Tooltip>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
-                                            <div>
-                                                <Button className='cursor-pointer rounded-md' variant={"outline"} onClick={() => {
-                                                    redirect(`/authority/dashboard/${issue.id}/chat`)
-                                                }}>
+                                            <div className="relative">
+                                                <Button
+                                                    className={`cursor-pointer rounded-md relative transition-all duration-200
+                                                                                        ${unreadInnsues.includes(issue.id)
+                                                            ? "border-red-500 ring-1 ring-red-500"
+                                                            : ""
+                                                        }`}
+                                                    variant={"outline"}
+                                                    onClick={() => {
+                                                        redirect(`/citizen/dashboard/${issue.id}/chat`)
+                                                    }}
+                                                >
                                                     <MessagesSquare />
                                                 </Button>
+
+                                                {unreadInnsues.includes(issue.id) && (
+                                                    <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full border-2 border-white"></span>
+                                                )}
                                             </div>
                                         </TooltipTrigger>
                                         <TooltipContent>
