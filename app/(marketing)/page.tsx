@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import React from 'react'
 import Hero from './_components/Hero'
 import Navbar from './_components/Navbar'
+import { Footer } from './_components/Footer'
 
 const page = async () => {
 
@@ -21,6 +22,7 @@ const page = async () => {
     <div>
       <Navbar />
       <Hero />
+      <Footer />
     </div>
 
   )
