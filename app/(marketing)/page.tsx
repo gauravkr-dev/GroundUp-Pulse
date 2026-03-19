@@ -9,6 +9,8 @@ import CitizenSection from './_components/CitizenSection'
 import AuthoritySection from './_components/AuthoritySection'
 import WorkflowSection from './_components/WorkflowFeature'
 import { RoleOfAi } from './_components/RoleOfAi'
+import { FaqsSection } from './_components/FaqsSection'
+// import { FaqsSection } from './_components/FaqsSection'
 
 const page = async () => {
 
@@ -30,6 +32,7 @@ const page = async () => {
       <AuthoritySection />
       <RoleOfAi />
       <WorkflowSection />
+      <FaqsSection />
       <Footer />
     </div>
 

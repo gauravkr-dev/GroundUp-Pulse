@@ -73,7 +73,7 @@ const Hero = () => {
                 >
                     Report Issues. Track Progress.<br /> Build Better Communities.
                 </h1>
-                <div className="absolute top-[40%] left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-blue-400/10 blur-[100px] rounded-full -z-10" />
+                <div className="absolute top-[40%] left-1/2 -translate-x-1/2 md:w-[500px] md:h-[300px] w-[300px] h-[200px] bg-blue-400/10 blur-[100px] rounded-full -z-10" />
                 <p className="fade-in slide-in-from-bottom-10 mx-auto max-w-md animate-in fill-mode-backwards text-center text-base text-foreground/80 tracking-wider delay-200 duration-500 ease-out sm:text-lg md:text-xl text-sm px-6 md:px-0 mt-3">
                     GroundUp Pulse connects citizens with authorities for faster issue resolution.
                 </p>
