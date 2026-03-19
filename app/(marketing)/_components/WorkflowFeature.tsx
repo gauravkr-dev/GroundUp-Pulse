@@ -102,7 +102,7 @@ export default function WorkflowSection() {
             <p className="text-muted-foreground mb-12"> From reporting to resolution in simple steps </p>
 
             {/* IMAGE */}
-            <div className="max-w-5xl mx-auto mb-6 h-[400px] flex items-center justify-center border rounded-xl overflow-hidden">
+            <div className="max-w-5xl mx-auto mb-6 md:h-[400px] h-[200px] flex items-center justify-center border rounded-xl overflow-hidden">
                 <AnimatePresence mode="wait">
                     <motion.img
                         key={currentImages[imageIndex]}
