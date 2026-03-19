@@ -7,6 +7,7 @@ import Navbar from './_components/Navbar'
 import { Footer } from './_components/Footer'
 import CitizenSection from './_components/CitizenSection'
 import AuthoritySection from './_components/AuthoritySection'
+import WorkflowSection from './_components/WorkflowFeature'
 
 const page = async () => {
 
@@ -26,6 +27,7 @@ const page = async () => {
       <Hero />
       <CitizenSection />
       <AuthoritySection />
+      <WorkflowSection />
       <Footer />
     </div>
 
