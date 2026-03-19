@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { ArrowRight, ArrowRightIcon, Landmark, RocketIcon } from 'lucide-react'
+import Link from 'next/link'
 import React from 'react'
 
 const Hero = () => {
@@ -78,16 +79,21 @@ const Hero = () => {
                 </p>
 
                 <div className="fade-in slide-in-from-bottom-10 flex animate-in flex-row flex-wrap items-center justify-center gap-8 fill-mode-backwards pt-2 delay-300 duration-500 ease-out px-6 md:px-0 mt-6">
-                    <Button className="rounded-md group cursor-pointer" size="lg" variant="outline">
-                        <RocketIcon />
-                        Report an Issue
-                        <ArrowRightIcon className='group-hover:translate-x-1 transition transform' />
-                    </Button>
-                    <Button className="rounded-md group cursor-pointer" size="lg" variant="outline">
-                        <Landmark />
-                        For Authorities
-                        <ArrowRightIcon className='group-hover:translate-x-1 transition transform' />
-                    </Button>
+                    <Link href="/citizen/sign-up">
+                        <Button className="rounded-md group cursor-pointer" size="lg" variant="outline">
+                            <RocketIcon />
+                            Report an Issue
+                            <ArrowRightIcon className='group-hover:translate-x-1 transition transform' />
+                        </Button>
+                    </Link>
+
+                    <Link href="/authority/sign-up">
+                        <Button className="rounded-md group cursor-pointer" size="lg" variant="outline">
+                            <Landmark />
+                            For Authorities
+                            <ArrowRightIcon className='group-hover:translate-x-1 transition transform' />
+                        </Button>
+                    </Link>
                 </div>
             </div>
         </section>

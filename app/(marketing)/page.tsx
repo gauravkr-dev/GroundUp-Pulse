@@ -5,6 +5,8 @@ import React from 'react'
 import Hero from './_components/Hero'
 import Navbar from './_components/Navbar'
 import { Footer } from './_components/Footer'
+import CitizenSection from './_components/CitizenSection'
+import AuthoritySection from './_components/AuthoritySection'
 
 const page = async () => {
 
@@ -22,6 +24,8 @@ const page = async () => {
     <div>
       <Navbar />
       <Hero />
+      <CitizenSection />
+      <AuthoritySection />
       <Footer />
     </div>
 
