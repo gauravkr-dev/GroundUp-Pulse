@@ -210,6 +210,53 @@ export const issueRouter = createTRPCRouter({
                 rejected: rejected.value,
             }
         }),
+
+    updateIssue: authorityProcedure
+        .input(z.object({
+            id: z.string(),
+            status: z.enum(["open", "assigned", "resolved", "rejected"]),
+            rejectReason: z.string().optional(),
+            rejectImages: z.array(z.string()).optional(),
+            rejectedBy: z.string().optional(),
+            resolveComment: z.string().optional(),
+            resolveImages: z.array(z.string()).optional(),
+            resolvedBy: z.string().optional(),
+        }))
+        .mutation(async ({ ctx, input }) => {
+            // Fetch the issue to ensure it exists and belongs to the authority's department
+            const [issue] = await db
+                .select()
+                .from(postIssue)
+                .where(
+                    and(
+                        eq(postIssue.id, input.id),
+                        eq(postIssue.department, ctx.auth.user.department || "")
+                    )
+                );
+            if (!issue) {
+                throw new TRPCError({
+                    code: "FORBIDDEN",
+                    message: "Issue not found or you don't have access to it.",
+                });
+            }
+
+            // Update the issue with new status and related fields
+            await db
+                .update(postIssue)
+                .set({
+                    status: input.status,
+                    rejectReason: input.rejectReason,
+                    rejectImages: input.rejectImages,
+                    rejectedBy: input.rejectedBy,
+                    resolveComment: input.resolveComment,
+                    resolveImages: input.resolveImages,
+                    resolvedBy: input.resolvedBy,
+                    resolvedAt: input.status === "resolved" ? new Date() : undefined,
+                    rejectedAt: input.status === "rejected" ? new Date() : undefined,
+                })
+                .where(eq(postIssue.id, input.id));
+            return { success: true };
+        }),
 })
 
 

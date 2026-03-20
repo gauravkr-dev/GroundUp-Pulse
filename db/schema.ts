@@ -143,6 +143,12 @@ export const postIssue = pgTable("post_issue", {
     emergency: boolean("emergency").default(false).notNull(),
     priority_score: text("priority_score").notNull(),
     rejectReason: text("reject_reason"),
+    rejectImages: text("reject_images").array(),
+    rejectedBy: text("rejected_by"),
+    rejectedAt: timestamp("rejected_at"),
+    resolveComment: text("resolve_comment"),
+    resolveImages: text("resolve_images").array(),
+    resolvedBy: text("resolved_by"),
     resolvedAt: timestamp("resolved_at"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
