@@ -5,7 +5,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useTRPC } from '@/trpc/client';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
-import { ArrowRight, ChevronRight, CircleCheckBig, Landmark, MapPin, MessagesSquare, Minus, ShieldBan } from 'lucide-react';
+import { ArrowRight, CircleCheckBig, Landmark, MapPin, MessagesSquare, Minus, ShieldBan } from 'lucide-react';
 import Image from 'next/image';
 import React, { useState } from 'react'
 import Link from 'next/link';
@@ -14,6 +14,8 @@ import { redirect } from 'next/navigation';
 import RejectDialog from './reject-dialog';
 import ResolveDialog from './resolve-dialog';
 import { authClient } from '@/lib/auth-client';
+import RejectedCard from '@/components/rejected-card';
+import ResolvedCard from '@/components/resolved-card';
 
 interface AuthorityDetailIssueViewProps {
     id: string;
@@ -22,7 +24,6 @@ interface AuthorityDetailIssueViewProps {
 const AuthorityDetailIssueView = ({ id }: AuthorityDetailIssueViewProps) => {
     const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
     const [resolveDialogOpen, setResolveDialogOpen] = useState(false);
-    const [currentImage, setCurrentImage] = useState(0)
     const trpc = useTRPC();
     const { data: userData } = authClient.useSession();
     const { data: issue } = useSuspenseQuery(trpc.issue.getOne.queryOptions({ id }));
@@ -32,11 +33,6 @@ const AuthorityDetailIssueView = ({ id }: AuthorityDetailIssueViewProps) => {
             role: "authority"
         })
     )
-    const nextImage = () => {
-        setCurrentImage((prev) =>
-            prev === issue.images.length - 1 ? 0 : prev + 1
-        )
-    }
     return (
         <>
             <RejectDialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen} rejectedBy={userData?.user?.id} />
@@ -144,33 +140,21 @@ const AuthorityDetailIssueView = ({ id }: AuthorityDetailIssueViewProps) => {
                     {/* // Image */}
 
 
-                    <div className="relative mt-12 md:mt-18 w-full">
-
-                        <Image
-                            src={issue.images[currentImage]}
-                            alt="issue image"
-                            width={1600}
-                            height={900}
-                            className="w-full h-auto object-contain object-center rounded-xl border bg-gray-50 dark:bg-[#0b0b0b]"
-                        />
-
-                        {/* NEXT IMAGE BUTTON */}
-                        {issue.images.length > 1 && (
-                            <button
-                                onClick={nextImage}
-                                className="
-                                        absolute right-1 top-1/2 -translate-y-1/2 
-                                        cursor-pointer border border p-2 bg-blue-500/80
-                                       rounded-full 
-                                        shadow-md
-                                        transition"
-                            >
-                                <ChevronRight className="size-5 dark:text-foreground" />
-                            </button>
-                        )}
-
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                        {issue.images.map((img, index) => (
+                            <Image
+                                key={index}
+                                src={img}
+                                alt="rejection"
+                                width={300}
+                                height={200}
+                                className="w-full h-full object-cover rounded-lg border hover:scale-105 transition cursor-pointer"
+                            />
+                        ))}
                     </div>
-                    <div className="flex md:flex-row flex-col justify-between mt-12 md:mt-18 gap-4">
+                </div>
+                <div className='border rounded-lg p-4 bg-white dark:bg-[#121212] flex flex-col md:px-6 mt-6'>
+                    <div className="flex md:flex-row flex-col justify-between mt-4 gap-4">
                         <Link
                             href={`https://www.google.com/maps?q=${issue.latitude},${issue.longitude}`}
                             target="_blank"
@@ -199,27 +183,47 @@ const AuthorityDetailIssueView = ({ id }: AuthorityDetailIssueViewProps) => {
                         <IssueMap lat={issue.latitude} lng={issue.longitude} />
                     </div>
                 </div>
+            </div>
 
-                {/* // Action buttons */}
-
+            {/* // Action buttons */}
+            <div className='px-4 md:px-24 mt-6 mb-12'>
                 {issue.status !== "resolved" && issue.status !== "rejected" && (
                     <div className='flex flex-row gap-4 my-12 justify-between'>
 
                         <Button
                             variant={"outline"}
-                            className="border-red-500 text-red-500 hover:bg-red-500/10 dark:hover:bg-red-500/10 cursor-pointer"
+                            className="border-red-500 rounded text-red-500 hover:bg-red-500/10 dark:hover:bg-red-500/10 cursor-pointer"
                             onClick={() => setRejectDialogOpen(true)}
                         >
                             Reject Issue
                         </Button>
                         <Button
                             variant={"outline"}
-                            className="border-green-500 text-green-500 hover:bg-green-500/10 dark:hover:bg-green-500/10 cursor-pointer"
+                            className="border-green-500 rounded text-green-500 hover:bg-green-500/10 dark:hover:bg-green-500/10 cursor-pointer"
                             onClick={() => setResolveDialogOpen(true)}
                         >
                             Mark as Resolved
                         </Button>
                     </div>
+                )}
+            </div>
+            <div className='mx-4 md:mx-24 mt-6 mb-12 bg-white dark:bg-[#121212]'>
+                {issue.status === "rejected" && (
+                    <RejectedCard
+                        reason={issue.rejectReason || "No reason provided"}
+                        images={issue.rejectImages || []}
+                        rejectedBy={issue.rejectedBy || "Unknown"}
+                        rejectedAt={issue.rejectedAt ? new Date(issue.rejectedAt) : new Date()}
+                    />
+                )}
+
+                {issue.status === "resolved" && (
+                    <ResolvedCard
+                        comment={issue.resolveComment || "No comment provided"}
+                        images={issue.resolveImages || []}
+                        resolvedBy={issue.resolvedBy || "Unknown"}
+                        resolvedAt={issue.resolvedAt ? new Date(issue.resolvedAt) : new Date()}
+                    />
                 )}
             </div>
         </>
