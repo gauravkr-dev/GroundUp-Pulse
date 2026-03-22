@@ -8,11 +8,22 @@ import { ErrorState } from '@/components/ui/error';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 interface pageProps {
     params: Promise<{ id: string }>
 }
 const page = async ({ params }: pageProps) => {
+
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
+
+    if (!session || session.user.role !== "citizen") {
+        redirect("/")
+    }
 
     const { id } = await params;
     const queryClient = getQueryClient();
