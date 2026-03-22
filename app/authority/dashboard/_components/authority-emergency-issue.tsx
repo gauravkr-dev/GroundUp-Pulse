@@ -88,7 +88,7 @@ const AuthorityEmergencyIssue = () => {
                                                         }`}
                                                     variant={"outline"}
                                                     onClick={() => {
-                                                        redirect(`/citizen/dashboard/${issue.id}/chat`)
+                                                        redirect(`/authority/dashboard/${issue.id}/chat`)
                                                     }}
                                                 >
                                                     <MessagesSquare />
