@@ -160,7 +160,7 @@ const AuthorityDetailIssueView = ({ id }: AuthorityDetailIssueViewProps) => {
                                                 }`}
                                             variant={"outline"}
                                             onClick={() => {
-                                                redirect(`/citizen/dashboard/${issue.id}/chat`)
+                                                redirect(`/authority/dashboard/${issue.id}/chat`)
                                             }}
                                         >
                                             <MessagesSquare />
