@@ -163,23 +163,24 @@ const DetailIssueView = ({ id }: DetailIssueViewProps) => {
                     </div>
                 </div>
                 <div className='border rounded-lg p-4 bg-white dark:bg-[#121212] flex flex-col md:px-6 mt-6'>
-                    <div className="flex md:flex-row flex-col justify-between mt-4 gap-4">
+                    <div className="flex md:flex-row flex-col justify-between mt-4 gap-6 mb-4">
                         <Link
                             href={`https://www.google.com/maps?q=${issue.latitude},${issue.longitude}`}
                             target="_blank"
-                            className="group flex items-center justify-end"
+                            className="group flex items-center"
                         >
-                            <span>
-                                <Image
-                                    src="/google_map.svg"
-                                    alt="Google Maps"
-                                    width={28}
-                                    height={28}
-                                    className="object-contain"
-                                />
-                            </span>
-                            <span className="underline text-sm group-hover:text-blue-500">Open in Google Maps</span>
-                            <span> <ArrowRight className="group-hover:translate-x-1 group-hover:text-blue-500 transition-transform size-4 ml-1" /> </span>
+                            <Button variant={"outline"} className="flex items-center gap-2 cursor-pointer rounded-md">
+                                <span>
+                                    <Image
+                                        src="/google_map.svg"
+                                        alt="Google Maps"
+                                        width={28}
+                                        height={28}
+                                        className="object-contain"
+                                    />
+                                </span>
+                                Open in Google Maps
+                            </Button>
                         </Link>
                         <div className='flex flex-row items-start text-sm gap-2'>
                             <MapPin className="size-5 text-green-500" />
