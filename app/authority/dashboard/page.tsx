@@ -4,9 +4,19 @@ import { getQueryClient, trpc } from '@/trpc/server'
 import { ErrorBoundary } from "react-error-boundary"
 import { ErrorState } from '@/components/ui/error'
 import AuthorityTabs from './_components/authority-tabs'
+import { auth } from '@/lib/auth'
+import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
 
-const page = () => {
+const page = async () => {
 
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
+
+    if (!session || session.user.role !== "authority") {
+        redirect("/")
+    }
     const queryClient = getQueryClient();
     void queryClient.prefetchQuery(trpc.issue.getMany.queryOptions())
     void queryClient.prefetchQuery(trpc.issue.getManyClosed.queryOptions())
