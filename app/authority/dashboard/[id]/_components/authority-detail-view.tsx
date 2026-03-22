@@ -3,19 +3,21 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useTRPC } from '@/trpc/client';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
-import { ArrowRight, CircleCheckBig, Landmark, MapPin, MessagesSquare, Minus, ShieldBan } from 'lucide-react';
+import { CircleCheckBig, Landmark, MapPin, MessagesSquare, Minus, ShieldBan } from 'lucide-react';
 import Image from 'next/image';
 import React, { useState } from 'react'
 import Link from 'next/link';
 import IssueMap from '@/app/citizen/dashboard/[id]/_components/issue-map-detail';
-import { redirect } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import RejectDialog from './reject-dialog';
 import ResolveDialog from './resolve-dialog';
 import { authClient } from '@/lib/auth-client';
 import RejectedCard from '@/components/rejected-card';
 import ResolvedCard from '@/components/resolved-card';
+import { useConfirm } from '@/hooks/use-confirm';
+import { toast } from 'sonner';
 
 interface AuthorityDetailIssueViewProps {
     id: string;
@@ -27,17 +29,79 @@ const AuthorityDetailIssueView = ({ id }: AuthorityDetailIssueViewProps) => {
     const trpc = useTRPC();
     const { data: userData } = authClient.useSession();
     const { data: issue } = useSuspenseQuery(trpc.issue.getOne.queryOptions({ id }));
-
+    const router = useRouter();
     const { data: unreadInnsues } = useSuspenseQuery(
         trpc.message.getUnreadIssues.queryOptions({
             role: "authority"
         })
     )
+
+    const updateMutation = useMutation(
+        trpc.issue.updateIssue.mutationOptions({
+            onSuccess: () => {
+                toast.success("Issue status updated successfully");
+                router.refresh();
+            },
+            onError: () => {
+                toast.error("Failed to update issue status");
+            }
+        })
+    )
+    const [MarkAsAssignedConfirmation, ConfirmAssigned] = useConfirm(
+        "Are you sure you want to mark this issue as assigned?",
+        "Marking this issue as assigned will indicate that you are currently working on it.",
+    )
+    const [MarkAsOpenConfirmation, ConfirmOpen] = useConfirm(
+        "Are you sure you want to mark this issue as open?",
+        "Marking this issue as open will indicate that it is available for assignment.",
+    )
     return (
         <>
+            <MarkAsAssignedConfirmation />
+            <MarkAsOpenConfirmation />
             <RejectDialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen} rejectedBy={userData?.user?.id} />
             <ResolveDialog open={resolveDialogOpen} onOpenChange={setResolveDialogOpen} resolvedBy={userData?.user?.id} />
             <div className='px-4 md:px-24 mt-6 mb-12'>
+                {issue.status === "open" && (
+                    <div className='flex flex-row gap-4 mt-4 mb-6 justify-end'>
+                        <Button
+                            variant={"outline"}
+                            className="border-blue-500 rounded text-blue-500 hover:text-blue-500 hover:bg-blue-500/10 dark:hover:bg-blue-500/10 cursor-pointer"
+                            onClick={() => {
+                                ConfirmAssigned().then((confirmed) => {
+                                    if (confirmed) {
+                                        updateMutation.mutate({
+                                            id,
+                                            status: "assigned",
+                                        })
+                                    }
+                                })
+                            }}>
+                            Mark as Assigned
+                        </Button>
+                    </div>
+
+                )}
+                {issue.status === "assigned" && (
+                    <div className='flex flex-row gap-4 mt-4 mb-6 justify-end'>
+                        <Button
+                            variant={"outline"}
+                            className="border-yellow-500 rounded text-yellow-500 hover:text-yellow-500 hover:bg-yellow-500/10 dark:hover:bg-yellow-500/10 cursor-pointer"
+                            onClick={() => {
+                                ConfirmOpen().then((confirmed) => {
+                                    if (confirmed) {
+                                        updateMutation.mutate({
+                                            id,
+                                            status: "open",
+                                        })
+                                    }
+                                })
+                            }}>
+                            Mark as Open
+                        </Button>
+                    </div>
+
+                )}
                 <div className='border rounded-lg p-4 bg-white dark:bg-[#121212] flex flex-col md:px-6'>
 
                     {/* // Header part */}
@@ -154,23 +218,24 @@ const AuthorityDetailIssueView = ({ id }: AuthorityDetailIssueViewProps) => {
                     </div>
                 </div>
                 <div className='border rounded-lg p-4 bg-white dark:bg-[#121212] flex flex-col md:px-6 mt-6'>
-                    <div className="flex md:flex-row flex-col justify-between mt-4 gap-4">
+                    <div className="flex md:flex-row flex-col justify-between mt-4 gap-6 mb-4">
                         <Link
                             href={`https://www.google.com/maps?q=${issue.latitude},${issue.longitude}`}
                             target="_blank"
-                            className="group flex items-center justify-end"
+                            className="group flex items-center"
                         >
-                            <span>
-                                <Image
-                                    src="/google_map.svg"
-                                    alt="Google Maps"
-                                    width={28}
-                                    height={28}
-                                    className="object-contain"
-                                />
-                            </span>
-                            <span className="underline text-sm">Open in Google Maps</span>
-                            <span> <ArrowRight className="group-hover:translate-x-1 transition-transform size-4 ml-1" /> </span>
+                            <Button variant={"outline"} className="flex items-center gap-2 cursor-pointer rounded-md">
+                                <span>
+                                    <Image
+                                        src="/google_map.svg"
+                                        alt="Google Maps"
+                                        width={28}
+                                        height={28}
+                                        className="object-contain"
+                                    />
+                                </span>
+                                Open in Google Maps
+                            </Button>
                         </Link>
                         <div className='flex flex-row items-start text-sm gap-2'>
                             <MapPin className="size-5 text-green-500" />
