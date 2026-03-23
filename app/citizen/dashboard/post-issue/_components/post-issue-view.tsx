@@ -11,14 +11,14 @@ import { useForm, Controller } from "react-hook-form"
 import { z } from "zod"
 import IssueLocationMap from "./IssueLocationMap"
 import { ArrowLeft } from "lucide-react"
+import { BadgeCheck, OctagonAlert, XCircle } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 import IssueImageUpload from "./IssueImageUpload"
 import { useMutation } from "@tanstack/react-query"
 import { useTRPC } from "@/trpc/client"
-import { toast } from "sonner"
 import { useRouter } from "next/navigation"
-import axios from "axios"
+import { Spinner } from "@/components/ui/spinner"
 
 export const categories = [
     "water",
@@ -45,6 +45,43 @@ const postIssueFormSchema = z.object({
 
 type FormData = z.infer<typeof postIssueFormSchema>
 
+type IssueStatusModalProps = {
+    type: "success" | "error" | "duplicate";
+    message: string;
+    onClose: () => void;
+    onAction: () => void;
+};
+
+const IssueStatusModal = ({ type, message, onAction }: IssueStatusModalProps) => {
+    const icon =
+        type === "success" ? (
+            <BadgeCheck className="text-green-500" size={40} />
+        ) : type === "duplicate" ? (
+            <OctagonAlert className="text-yellow-500" size={40} />
+        ) : (
+            <XCircle className="text-red-500" size={40} />
+        );
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+            <div className="w-full max-w-md rounded-xl bg-card border p-6 shadow-lg">
+                <div className="flex flex-col items-center text-center">
+                    {icon}
+                    <h3 className="text-lg font-semibold mt-3 mb-2">
+                        {type === "success" ? "Issue Posted" : type === "duplicate" ? "Duplicate Issue Found" : "Submission Failed"}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-6">{message}</p>
+                </div>
+                <div className="flex justify-end gap-2">
+                    <Button type="button" variant={"outline"} onClick={onAction} className={` rounded cursor-pointer ${type === "success" ? "border-green-500 text-green-500 hover:bg-green-500/10 dark:hover:bg-green-500/10" : type === "duplicate" ? "border-yellow-500 text-yellow-500 hover:bg-yellow-500/10 dark:hover:bg-yellow-500/10" : "border-red-500 text-red-500 hover:bg-red-500/10 dark:hover:bg-red-500/10"} text-white`}>
+                        {type === "success" ? "Go to Dashboard" : type === "duplicate" ? "Go to Dashboard" : "Okay"}
+                    </Button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const PostIssueView = () => {
     const [location, setLocation] = useState<{
         lat: number
@@ -52,19 +89,38 @@ const PostIssueView = () => {
     } | null>(null)
 
     const [isSubmitting, setIsSubmitting] = useState(false);
-
+    const [modal, setModal] = useState<{
+        type: "success" | "error" | "duplicate";
+        message: string;
+        issueId?: string;
+    } | null>(null);
     const trpc = useTRPC();
     const router = useRouter();
     const createPostIssue = useMutation(
-        trpc.postIssue.create.mutationOptions({
-            onSuccess: () => {
-                toast.success("Issue reported successfully!")
-                router.push("/citizen/dashboard")
+        trpc.postIssue.checkAndCreateIssue.mutationOptions({
+            onSuccess: (data) => {
+                if (data.type === "duplicate" && "issueId" in data) {
+                    setModal({
+                        type: "duplicate",
+                        message: data.message,
+                        issueId: data.issueId,
+                    });
+                    return;
+                }
+                setIsSubmitting(false);
+                setModal({
+                    type: "success",
+                    message: "Your issue has been posted successfully!",
+                });
             },
+
             onError: (error) => {
-                toast.error("Failed to report the issue. Please try again.")
-                console.error("Error reporting issue:", error)
-            }
+                setModal({
+                    type: "error",
+                    message: error.message || "Something went wrong",
+                });
+                setIsSubmitting(false);
+            },
         })
     )
 
@@ -89,31 +145,16 @@ const PostIssueView = () => {
     }, [location, form])
 
     const onSubmit = async (data: FormData) => {
-        setIsSubmitting(true)
-        const result = await axios.post("/api/post-issue-analysis", {
-            describe_issue: data.describe_issue,
-            images: data.images,
-            latitude: data.latitude,
-            longitude: data.longitude,
-            address: data.address,
-            category: data.category
-        })
-
-        const title = result.data.response.title;
-        const priority_score = result.data.response.priority_score;
-        const department = result.data.department;
-        console.log("Analysis result:", department, title, priority_score);
         createPostIssue.mutate({
-            title: title,
-            department: department,
-            priority_score: String(priority_score),
             describe_issue: data.describe_issue,
             images: data.images,
             latitude: data.latitude,
             longitude: data.longitude,
             address: data.address,
-            category: data.category
-        })
+            category: data.category,
+        }
+        )
+        setIsSubmitting(true)
     }
 
     return (
@@ -248,14 +289,30 @@ const PostIssueView = () => {
                     {/* Submit */}
                     <div className="flex justify-end pt-2">
                         <Button
+                            type="submit"
                             className="group max-w-max bg-primary text-primary-foreground text-sm py-2 px-3 rounded hover:cursor-pointer hover:bg-primary/90"
                             disabled={isSubmitting}
                         >
-                            <span className='dark:text-foreground'>{isSubmitting ? "Submitting..." : "Submit Issue"}</span>
+                            <span className='dark:text-foreground'>{isSubmitting ? <span className="flex items-center flex-row justify-center gap-1"><Spinner /> Submitting...</span> : "Submit Issue"}</span>
                         </Button>
                     </div>
 
                 </form>
+
+                {modal && (
+                    <IssueStatusModal
+                        type={modal.type}
+                        message={modal.message}
+                        onClose={() => setModal(null)}
+                        onAction={() => {
+                            if (modal.type === "duplicate" || modal.type === "success") {
+                                router.push("/citizen/dashboard");
+                            } else {
+                                setModal(null);
+                            }
+                        }}
+                    />
+                )}
             </div>
         </>
     )

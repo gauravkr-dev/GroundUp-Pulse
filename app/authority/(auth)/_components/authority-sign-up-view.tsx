@@ -14,6 +14,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import { Field, FieldError, FieldLabel } from '@/components/ui/field'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Spinner } from '@/components/ui/spinner'
 
 export const departments = [
     "Water Supply Department",
@@ -169,7 +170,7 @@ export default function AuthoritySignUpView() {
                             )}
                         </Field>
                     </div>
-                    <Button disabled={pending} className="w-full mt-4 cursor-pointer" type="submit">{pending ? 'Creating Account...' : 'Create Account'}</Button>
+                    <Button disabled={pending} className="w-full mt-4 cursor-pointer" type="submit">{pending ? <span className="flex items-center flex-row justify-center gap-1"><Spinner /> Creating...</span> : 'Create Account'}</Button>
                 </div>
 
                 <div className="bg-muted rounded-(--radius) border p-3">
