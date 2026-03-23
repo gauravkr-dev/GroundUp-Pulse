@@ -30,6 +30,9 @@ const formSchema = z.object({
     email: z.string().email(),
     password: z.string().min(8, 'Password must be at least 8 characters long'),
     department: z.enum(departments, { message: "Please select your department." }),
+    acknowledged: z.boolean().refine(val => val === true, {
+        message: "You must accept this before continuing"
+    })
 })
 
 
@@ -45,6 +48,7 @@ export default function AuthoritySignUpView() {
             email: '',
             password: '',
             department: undefined,
+            acknowledged: false,
         },
     });
     const onSubmit = (data: z.infer<typeof formSchema>) => {
@@ -166,6 +170,25 @@ export default function AuthoritySignUpView() {
                             {form.formState.errors.password && (
                                 <FieldError>
                                     {form.formState.errors.password.message}
+                                </FieldError>
+                            )}
+                        </Field>
+                        <Field>
+                            <div className="flex items-start gap-2 mt-2 border border-yellow-300 rounded p-3 bg-yellow-50">
+                                <Input
+                                    type="checkbox"
+                                    {...form.register("acknowledged")}
+                                    className="size-5 transform scale-150 accent-primary rounded-sm"
+                                />
+                                <div className="text-yellow-800 text-sm">
+                                    This is a team-based department. Some issues may already be assigned,
+                                    resolved, or handled by other officers.
+                                </div>
+                            </div>
+
+                            {form.formState.errors.acknowledged && (
+                                <FieldError>
+                                    {form.formState.errors.acknowledged.message}
                                 </FieldError>
                             )}
                         </Field>
