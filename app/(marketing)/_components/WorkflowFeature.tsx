@@ -95,14 +95,14 @@ export default function WorkflowSection() {
     };
 
     return (
-        <section className="py-12 px-4 md:px-24 text-center">
+        <section id="how-it-works" className="py-12 px-4 md:px-12 text-center">
             <h2 className="text-2xl md:text-3xl font-medium mb-4">
                 How It Works
             </h2>
             <p className="text-muted-foreground mb-12"> From reporting to resolution in simple steps </p>
 
             {/* IMAGE */}
-            <div className="max-w-5xl mx-auto mb-6 md:h-[400px] h-[200px] flex items-center justify-center border rounded-xl overflow-hidden">
+            <div className="max-w-6xl mx-auto mb-6 md:h-[450px] h-[200px] flex items-center justify-center border rounded-xl overflow-hidden">
                 <AnimatePresence mode="wait">
                     <motion.img
                         key={currentImages[imageIndex]}
@@ -115,32 +115,36 @@ export default function WorkflowSection() {
                 </AnimatePresence>
             </div>
 
-            {/* TEXT */}
-            <div className="max-w-xl mb-4 text-left md:px-16">
-                <div className="flex items-center gap-2 mb-1">
-                    {currentStep.icon}
+            <div className="flex flex-col md:flex-row justify-between  gap-6 w-full max-w-6xl mx-auto">
+                {/* TEXT */}
+                <div className="mb-4 text-left ">
+                    <div className="flex items-center gap-2 mb-1">
+                        <div className="flex items-center gap-2 mb-1">
+                            {currentStep.icon}
+                        </div>
+                        <h3 className="text-lg font-medium">
+                            {currentStep.title}
+                        </h3>
+                    </div>
+                    <p className="text-muted-foreground text-sm">
+                        {currentStep.description}
+                    </p>
                 </div>
-                <h3 className="text-lg font-medium">
-                    {currentStep.title}
-                </h3>
-                <p className="text-muted-foreground text-sm">
-                    {currentStep.description}
-                </p>
-            </div>
 
-            {/* CONTROLS */}
-            <div className="flex items-center gap-4 md:px-16">
-                <span className="text-sm text-muted-foreground">
-                    {stepIndex + 1} / {steps.length}
-                </span>
+                {/* CONTROLS */}
+                <div className="flex items-center gap-4">
+                    <span className="text-sm text-muted-foreground">
+                        {stepIndex + 1} / {steps.length}
+                    </span>
 
-                <button onClick={prevStep} className="p-1 border rounded-full">
-                    <ChevronLeft className="size-4" />
-                </button>
+                    <button onClick={prevStep} className="p-1 border rounded-full">
+                        <ChevronLeft className="size-4" />
+                    </button>
 
-                <button onClick={nextStep} className="p-1 border rounded-full">
-                    <ChevronRight className="size-4" />
-                </button>
+                    <button onClick={nextStep} className="p-1 border rounded-full">
+                        <ChevronRight className="size-4" />
+                    </button>
+                </div>
             </div>
         </section>
     );
