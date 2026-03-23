@@ -13,6 +13,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { Field, FieldError, FieldLabel } from '@/components/ui/field'
+import { Spinner } from '@/components/ui/spinner'
 
 const formSchema = z.object({
     email: z.string().email(),
@@ -111,7 +112,7 @@ export default function AuthoritySignInView() {
                             )}
                         </Field>
                     </div>
-                    <Button disabled={pending} className="w-full mt-4 cursor-pointer" type="submit">{pending ? 'Signing In...' : 'Sign In'}</Button>
+                    <Button disabled={pending} className="w-full mt-4 cursor-pointer" type="submit">{pending ? <span className="flex items-center flex-row justify-center gap-1"><Spinner />Signing In...</span> : 'Sign In'}</Button>
                 </div>
 
                 <div className="bg-muted rounded-(--radius) border p-3">
