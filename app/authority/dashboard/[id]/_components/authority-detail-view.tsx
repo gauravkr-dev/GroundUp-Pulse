@@ -59,8 +59,8 @@ const AuthorityDetailIssueView = ({ id }: AuthorityDetailIssueViewProps) => {
         <>
             <MarkAsAssignedConfirmation />
             <MarkAsOpenConfirmation />
-            <RejectDialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen} rejectedBy={userData?.user?.id} />
-            <ResolveDialog open={resolveDialogOpen} onOpenChange={setResolveDialogOpen} resolvedBy={userData?.user?.id} />
+            <RejectDialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen} rejectedBy={userData?.user?.name} />
+            <ResolveDialog open={resolveDialogOpen} onOpenChange={setResolveDialogOpen} resolvedBy={userData?.user?.name} />
             <div className='px-4 md:px-24 mt-6 mb-12'>
                 {issue.status === "open" && (
                     <div className='flex flex-row gap-4 mt-4 mb-6 justify-end'>
