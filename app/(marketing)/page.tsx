@@ -7,10 +7,10 @@ import Navbar from './_components/Navbar'
 import { Footer } from './_components/Footer'
 import CitizenSection from './_components/CitizenSection'
 import AuthoritySection from './_components/AuthoritySection'
-import WorkflowSection from './_components/WorkflowFeature'
 import { RoleOfAi } from './_components/RoleOfAi'
 import { FaqsSection } from './_components/FaqsSection'
 import { CallToAction } from './_components/cta'
+import HowItWorks from './_components/HowItWorks'
 // import { FaqsSection } from './_components/FaqsSection'
 
 const page = async () => {
@@ -32,7 +32,7 @@ const page = async () => {
       <CitizenSection />
       <AuthoritySection />
       <RoleOfAi />
-      <WorkflowSection />
+      <HowItWorks />
       <FaqsSection />
       <CallToAction />
       <Footer />
