@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -33,8 +34,6 @@ export default function AuthorityChat({ issueId }: AuthorityChatProps) {
     const [text, setText] = useState("");
     const [image, setImage] = useState<string | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [uploading, setUploading] = useState(false);
-
     const sendMessageMutation = useMutation(
         trpc.message.sendMessage.mutationOptions({
             onError: (error) => {
@@ -225,28 +224,20 @@ export default function AuthorityChat({ issueId }: AuthorityChatProps) {
                     <div className="flex items-center justify-center w-16 h-16 rounded-full border border-dashed mt-4">
                         <ImageUp />
                     </div>
-                    {uploading ? (
-                        <div className="flex items-center gap-2 mb-6">
-                            <div className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin" />
-                            <span className="text-sm">Uploading...</span>
-                        </div>
-                    ) : (
-                        <UploadButton
-                            endpoint={"imageUploader"}
-                            onUploadBegin={() => setUploading(true)}
-                            onClientUploadComplete={(res) => {
-                                const url = res?.[0]?.ufsUrl
-                                setImage(url)
-                                setIsDialogOpen(false)
-                                setUploading(false)
-                            }}
-                            onUploadError={(error: Error) => {
-                                setUploading(false)
-                                toast.error("Upload failed: " + error.message)
-                            }}
-                            content={{ allowedContent: () => <></>, button: "Upload Image" }}
-                        />
-                    )}
+                    <UploadButton
+                        endpoint={"imageUploader"}
+                        onClientUploadComplete={(res) => {
+                            const first = res?.[0] as any;
+                            const file = first?.file ?? first;
+                            const url = file?.ufsUrl ?? file?.url ?? file?.appUrl ?? file?.fileUrl ?? file?.file?.ufsUrl ?? null;
+                            if (url) setImage(url as string);
+                            setIsDialogOpen(false);
+                        }}
+                        onUploadError={(error: Error) => {
+                            toast.error("Upload failed: " + error.message)
+                        }}
+                        content={{ allowedContent: () => <>Images up to 4MB, max 1</> }}
+                    />
                 </div>
             </ResponsiveDialog>
             <div className="px-4 md:px-12">

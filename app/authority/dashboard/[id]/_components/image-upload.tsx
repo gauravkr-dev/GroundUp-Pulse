@@ -19,7 +19,10 @@ export default function ImageUpload({ onChange }: Props) {
 
     const handleUpload = (res: any) => {
 
-        const urls = res.map((file: any) => file.url)
+        const urls = res.map((file: any) => {
+            const f = file?.file ?? file;
+            return f?.ufsUrl ?? f?.url ?? f?.appUrl ?? f?.fileUrl ?? null;
+        }).filter(Boolean) as string[];
 
         const updated = [...images, ...urls].slice(0, 4)
 
