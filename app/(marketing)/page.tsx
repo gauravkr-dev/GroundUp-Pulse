@@ -10,6 +10,7 @@ import AuthoritySection from './_components/AuthoritySection'
 import WorkflowSection from './_components/WorkflowFeature'
 import { RoleOfAi } from './_components/RoleOfAi'
 import { FaqsSection } from './_components/FaqsSection'
+import { CallToAction } from './_components/cta'
 // import { FaqsSection } from './_components/FaqsSection'
 
 const page = async () => {
@@ -33,6 +34,7 @@ const page = async () => {
       <RoleOfAi />
       <WorkflowSection />
       <FaqsSection />
+      <CallToAction />
       <Footer />
     </div>
 

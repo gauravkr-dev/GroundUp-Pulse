@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export default function CitizenSection() {
     return (
-        <section className="w-full py-8 px-6 md:px-12 lg:px-24">
+        <section id="citizen" className="w-full py-8 px-6 md:px-12 lg:px-24">
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-18 items-center">
                 <motion.div
                     initial={{ opacity: 0, x: -40 }}

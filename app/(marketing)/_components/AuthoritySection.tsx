@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export default function AuthoritySection() {
     return (
-        <section className="w-full py-20 px-6 md:px-18 lg:px-24">
+        <section id="authority" className="w-full py-20 px-6 md:px-18 lg:px-24">
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-18 items-center">
 
                 {/* LEFT TEXT */}

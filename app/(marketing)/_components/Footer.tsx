@@ -4,12 +4,12 @@ import { GithubIcon, Linkedin } from "lucide-react";
 import Image from "next/image";
 
 const navLinks = [
-    { href: "#", label: "Features" },
-    { href: "#", label: "Blog" },
-    { href: "#", label: "About" },
-    { href: "#", label: "Contact" },
-    { href: "#", label: "Licence" },
-    { href: "#", label: "Privacy" },
+    { href: "#hero", label: "Home" },
+    { href: "#how-it-works", label: "How It Works" },
+    { href: "#role-of-ai", label: "Role of AI" },
+    { href: "#citizen", label: "Citizen" },
+    { href: "#authority", label: "Authority" },
+    { href: "#privacy", label: "Privacy" },
 ];
 
 const socialLinks = [
