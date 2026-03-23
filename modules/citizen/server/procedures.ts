@@ -106,6 +106,14 @@ export const postIssueRouter = createTRPCRouter({
 
                 // ✅ VERY CLOSE → DIRECT DUPLICATE
                 if (distance < 50) {
+                    // SAME USER CHECK
+                    if (issue.userId === ctx.auth.user.id) {
+                        return {
+                            type: "duplicate",
+                            message: "You have already reported this issue.",
+                            issueId: issue.id,
+                        };
+                    }
                     await boostPriority(issue.id);
 
                     return {
@@ -127,6 +135,15 @@ export const postIssueRouter = createTRPCRouter({
                         }
                     );
                     if (isSame) {
+
+                        // SAME USER CHECK
+                        if (issue.userId === ctx.auth.user.id) {
+                            return {
+                                type: "duplicate",
+                                message: "You have already reported this issue.",
+                                issueId: issue.id,
+                            };
+                        }
                         await boostPriority(issue.id);
 
                         return {

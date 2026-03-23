@@ -97,12 +97,18 @@ const faqs = [
     },
     {
         id: "item-6",
+        title: "What happens if I report the same issue multiple times?",
+        content:
+            "If you report the same issue again, our system will detect it as a duplicate and will not increase its priority. You’ll be notified that you have already reported this issue.",
+    },
+    {
+        id: "item-7",
         title: "Is my data secure?",
         content:
             "Yes, we prioritize user privacy and ensure all data is securely handled and protected.",
     },
     {
-        id: "item-7",
+        id: "item-8",
         title: "What happens if an authority rejects an issue?",
         content:
             "If an issue is rejected, the authority is required to provide a valid reason. This ensures transparency and helps users understand the decision clearly.",
