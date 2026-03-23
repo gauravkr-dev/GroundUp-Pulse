@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Field, FieldLabel } from '@/components/ui/field'
 import { zodResolver } from '@hookform/resolvers/zod'
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
 import ImageUpload from './image-upload'
@@ -24,6 +24,7 @@ export const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>
 const ResolveForm = ({ onCancel, onSuccess, resolvedBy }: ResolveFormProps) => {
+    const [loading, setLoading] = useState(false);
     const trpc = useTRPC();
     const params = useParams();
     const id = params.id as string;
@@ -33,12 +34,14 @@ const ResolveForm = ({ onCancel, onSuccess, resolvedBy }: ResolveFormProps) => {
             onSuccess: () => {
                 toast.success("Issue resolved successfully");
                 router.push("/authority/dashboard");
+                setLoading(false);
                 if (onSuccess) {
                     onSuccess();
                 }
             },
             onError: () => {
                 toast.error("Failed to resolve issue");
+                setLoading(false);
             }
         })
     )
@@ -51,6 +54,7 @@ const ResolveForm = ({ onCancel, onSuccess, resolvedBy }: ResolveFormProps) => {
     })
 
     const handleSubmit = (data: FormData) => {
+        setLoading(true);
         updateIssueData.mutate({
             id: id,
             status: "resolved",
@@ -58,6 +62,8 @@ const ResolveForm = ({ onCancel, onSuccess, resolvedBy }: ResolveFormProps) => {
             resolveImages: data.images,
             resolvedBy: resolvedBy
         })
+        setLoading(false);
+
     }
     return (
         <div>
@@ -72,7 +78,7 @@ const ResolveForm = ({ onCancel, onSuccess, resolvedBy }: ResolveFormProps) => {
                 </Field>
                 {/* Image upload */}
                 <Field>
-                    <FieldLabel className='mb-4'>Upload Images that Justify Resolution (Optional)</FieldLabel>
+                    <FieldLabel className='mb-6'>Upload Images that Justify Resolution (Optional)</FieldLabel>
 
                     <ImageUpload
                         onChange={(urls) => {
@@ -95,8 +101,8 @@ const ResolveForm = ({ onCancel, onSuccess, resolvedBy }: ResolveFormProps) => {
                     >
                         Cancel
                     </Button>
-                    <Button type='submit' className="bg-green-500 text-white hover:bg-green-600 cursor-pointer">
-                        Submit Resolution
+                    <Button type='submit' className="bg-green-500 text-white hover:bg-green-600 cursor-pointer" disabled={loading}>
+                        {loading ? "Submitting..." : "Submit Resolution"}
                     </Button>
                 </div>
             </form>

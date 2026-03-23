@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 "use client";
 import { cn } from "@/lib/utils";
 import React, { useRef, useState } from "react";
@@ -182,8 +183,8 @@ export function GridPattern() {
                         <div
                             key={`${col}-${row}`}
                             className={`flex h-10 w-10 shrink-0 rounded-[2px] ${index % 2 === 0
-                                    ? "bg-gray-50 dark:bg-neutral-950"
-                                    : "bg-gray-50 shadow-[0px_0px_1px_3px_rgba(255,255,255,1)_inset] dark:bg-neutral-950 dark:shadow-[0px_0px_1px_3px_rgba(0,0,0,1)_inset]"
+                                ? "bg-gray-50 dark:bg-neutral-950"
+                                : "bg-gray-50 shadow-[0px_0px_1px_3px_rgba(255,255,255,1)_inset] dark:bg-neutral-950 dark:shadow-[0px_0px_1px_3px_rgba(0,0,0,1)_inset]"
                                 }`}
                         />
                     );

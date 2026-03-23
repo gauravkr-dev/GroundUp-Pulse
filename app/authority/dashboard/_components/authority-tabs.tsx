@@ -16,7 +16,7 @@ export default function AuthorityTabs() {
             {/* Fixed Tabs Bar */}
             <div className="fixed top-22 left-1/2 transform -translate-x-1/2 z-40 w-full max-w-4xl px-4">
                 <div className="flex justify-center">
-                    <div className="flex gap-2 rounded-full dark:bg-[#161616] p-1 border">
+                    <div className="flex gap-2 rounded-full dark:bg-[#161616] bg-white p-1 border">
                         <button
                             onClick={() => setTab("emergency")}
                             className={`flex cursor-pointer items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition

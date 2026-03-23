@@ -63,7 +63,7 @@ export default function IssueLocationMap({ onLocationSelect }: Props) {
 
         mapRef.current = map
 
-    }, [])
+    }, [API_KEY, onLocationSelect])
 
     // Current location
     const handleCurrentLocation = () => {

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Field, FieldLabel } from '@/components/ui/field'
 import { zodResolver } from '@hookform/resolvers/zod'
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
 import ImageUpload from './image-upload'
@@ -24,6 +24,7 @@ export const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>
 const RejectForm = ({ onCancel, onSuccess, rejectedBy }: RejectFormProps) => {
+    const [loading, setLoading] = useState(false);
     const trpc = useTRPC();
     const params = useParams();
     const id = params.id as string;
@@ -33,12 +34,14 @@ const RejectForm = ({ onCancel, onSuccess, rejectedBy }: RejectFormProps) => {
             onSuccess: () => {
                 toast.success("Issue rejected successfully");
                 router.push("/authority/dashboard");
+                setLoading(false);
                 if (onSuccess) {
                     onSuccess();
                 }
             },
             onError: () => {
                 toast.error("Failed to reject issue");
+                setLoading(false);
             }
         })
     )
@@ -51,6 +54,7 @@ const RejectForm = ({ onCancel, onSuccess, rejectedBy }: RejectFormProps) => {
     })
 
     const handleSubmit = (data: FormData) => {
+        setLoading(true);
         updateIssueData.mutate({
             id: id,
             status: "rejected",
@@ -58,6 +62,7 @@ const RejectForm = ({ onCancel, onSuccess, rejectedBy }: RejectFormProps) => {
             rejectImages: data.images,
             rejectedBy: rejectedBy
         })
+        setLoading(false);
     }
     return (
         <div>
@@ -72,7 +77,7 @@ const RejectForm = ({ onCancel, onSuccess, rejectedBy }: RejectFormProps) => {
                 </Field>
                 {/* Image upload */}
                 <Field>
-                    <FieldLabel className='mb-4'>Upload Images that Justify Rejection (Optional)</FieldLabel>
+                    <FieldLabel className='mb-6'>Upload Images that Justify Rejection (Optional)</FieldLabel>
 
                     <ImageUpload
                         onChange={(urls) => {
@@ -95,8 +100,8 @@ const RejectForm = ({ onCancel, onSuccess, rejectedBy }: RejectFormProps) => {
                     >
                         Cancel
                     </Button>
-                    <Button type='submit' className="bg-red-500 text-white hover:bg-red-600 cursor-pointer">
-                        Submit Rejection
+                    <Button type='submit' className="bg-red-500 text-white hover:bg-red-600 cursor-pointer" disabled={loading}>
+                        {loading ? "Rejecting..." : "Reject Issue"}
                     </Button>
                 </div>
             </form>

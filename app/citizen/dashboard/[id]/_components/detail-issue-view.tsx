@@ -6,7 +6,7 @@ import { authClient } from '@/lib/auth-client';
 import { useTRPC } from '@/trpc/client';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
-import { ArrowRight, CircleCheckBig, Landmark, MapPin, MessagesSquare, Minus, ShieldBan } from 'lucide-react';
+import { CircleCheckBig, Landmark, MapPin, MessagesSquare, Minus, ShieldBan } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react'
 import IssueMap from './issue-map-detail';

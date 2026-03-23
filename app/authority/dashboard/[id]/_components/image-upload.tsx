@@ -85,13 +85,9 @@ export default function ImageUpload({ onChange }: Props) {
                         button:
                             "ut-ready:bg-primary ut-uploading:bg-primary/70 ut-button:w-full ut-button:h-10 ut-button:text-sm ut-button:rounded-md",
                     }}
+                    content={{ allowedContent: () => <>Images up to 4MB, max 2</> }}
                 />
             )}
-
-            <p className="text-xs text-muted-foreground">
-                Upload up to 4 images (Max 4MB each)
-            </p>
-
         </div>
     )
 }

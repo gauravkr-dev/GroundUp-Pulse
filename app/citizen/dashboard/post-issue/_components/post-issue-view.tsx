@@ -33,7 +33,7 @@ const postIssueFormSchema = z.object({
         .string()
         .nonempty("Description is required.")
         .min(10, "Please provide a detailed description of the issue."),
-    images: z.array(z.string()).min(1, "Please upload at least one image.").max(4, "You can upload up to 4 images."),
+    images: z.array(z.string()).min(2, "Please upload at least two images.").max(4, "You can upload up to 4 images."),
     latitude: z.number().refine((v) => v !== 0 && !Number.isNaN(v), { message: "Please mark the exact location on the map." }),
 
     longitude: z.number().refine((v) => v !== 0 && !Number.isNaN(v), { message: "Please mark the exact location on the map." }),
