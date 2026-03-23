@@ -11,14 +11,12 @@ export default function AuthorityTabs() {
     const [tab, setTab] = useState("emergency")
 
     return (
-        <div>
+        <div className="relative">
 
-            <div className="w-full space-y-6">
-
-                {/* Tabs */}
+            {/* Fixed Tabs Bar */}
+            <div className="fixed top-22 left-1/2 transform -translate-x-1/2 z-40 w-full max-w-4xl px-4">
                 <div className="flex justify-center">
-                    <div className="flex gap-2 rounded-full dark:bg-[#161616] p-1 border border">
-
+                    <div className="flex gap-2 rounded-full dark:bg-[#161616] p-1 border">
                         <button
                             onClick={() => setTab("emergency")}
                             className={`flex cursor-pointer items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition
@@ -40,7 +38,7 @@ export default function AuthorityTabs() {
                                 }`}
                         >
                             <FolderOpen size={16} />
-                            Open Issues
+                            Opened
                         </button>
 
                         <button
@@ -57,9 +55,14 @@ export default function AuthorityTabs() {
 
                     </div>
                 </div>
+            </div>
+
+            {/* Spacer so page content isn't hidden behind the fixed tabs */}
+            <div className="h-20" />
+
+            <div className="w-full space-y-6">
 
                 {/* Content */}
-
                 <div className="w-full">
 
                     {tab === "emergency" && (

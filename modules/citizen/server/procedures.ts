@@ -149,8 +149,8 @@ export const postIssueRouter = createTRPCRouter({
                 category,
                 address,
                 department: getDepartment(category),
-                // DB stores priority_score as text; stringify the AI number
                 priority_score: String(aiResponse.priority_score),
+                emergency: aiResponse.priority_score === 100 ? true : false,
             });
 
             if (!newIssue) {
