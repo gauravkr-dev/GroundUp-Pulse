@@ -6,7 +6,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
 import { Skeleton } from '@/components/ui/skeleton';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { authClient } from '@/lib/auth-client';
-import { LayoutDashboard, LogOut, StarIcon } from 'lucide-react';
+import { LayoutDashboard, LogOut } from 'lucide-react';
 import Image from 'next/image'
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -78,7 +78,7 @@ const AuthorityHeader = () => {
                     <div className='flex flex-row items-center gap-4 text-sm md:text-base '>
                         {isMobile ? (
                             <Link href="/authority/dashboard/overview" className="rounded-full flex items-center justify-center p-1.5 size-8  cursor-pointer bg-white-500 text-black-500 border border hover:bg-muted hover:text-foreground">
-                                <StarIcon className="text-yellow-500" />
+                                <LayoutDashboard className="text-yellow-500" />
                             </Link>
                         ) : (
                             <Link href="/authority/dashboard/overview" className="">

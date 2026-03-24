@@ -64,7 +64,7 @@ const IssueStatusModal = ({ type, message, onAction }: IssueStatusModalProps) =>
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-            <div className="w-full max-w-md rounded-xl bg-card border p-6 shadow-lg">
+            <div className="w-full max-w-md rounded-xl bg-card border p-6">
                 <div className="flex flex-col items-center text-center">
                     {icon}
                     <h3 className="text-lg font-semibold mt-3 mb-2">
@@ -180,7 +180,7 @@ const PostIssueView = () => {
 
                 <form
                     onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-6 bg-card border rounded-xl p-6 shadow-sm"
+                    className="space-y-6 bg-card border rounded-xl p-6"
                 >
                     {/* Image upload */}
                     <Field>

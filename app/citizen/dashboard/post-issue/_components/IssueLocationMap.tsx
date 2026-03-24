@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useEffect, useRef, useState } from "react"
@@ -5,6 +6,7 @@ import maplibregl from "maplibre-gl"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { LocateFixed } from "lucide-react"
+import { toast } from "sonner"
 // @import "maplibre-gl/dist/maplibre-gl.css"
 
 interface Props {
@@ -67,33 +69,69 @@ export default function IssueLocationMap({ onLocationSelect }: Props) {
 
     // Current location
     const handleCurrentLocation = () => {
+        if (!navigator.geolocation) {
+            toast.error("Geolocation is not supported by your browser");
+            return;
+        }
 
-        if (!navigator.geolocation) return
+        let hasMoved = false;
 
-        navigator.geolocation.getCurrentPosition((pos) => {
+        const success = (pos: { coords: { latitude: any; longitude: any; accuracy: any } }) => {
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+            const accuracy = pos.coords.accuracy;
 
-            const lat = pos.coords.latitude
-            const lng = pos.coords.longitude
+            console.log("📍 Accuracy:", accuracy, "meters");
 
-            mapRef.current?.flyTo({
-                center: [lng, lat],
-                zoom: 16
-            })
+            // 👉 Only update if better accuracy OR first time
+            if (!hasMoved || accuracy < 100) {
+                mapRef.current?.flyTo({
+                    center: [lng, lat],
+                    zoom: 17,
+                    essential: true
+                });
 
-            if (markerRef.current) {
-                markerRef.current.remove()
+                if (markerRef.current) {
+                    markerRef.current.remove();
+                }
+
+                if (mapRef.current) {
+                    const marker = new maplibregl.Marker({ draggable: true })
+                        .setLngLat([lng, lat])
+                        .addTo(mapRef.current);
+
+                    markerRef.current = marker;
+                }
+
+                onLocationSelect(lat, lng);
+
+                hasMoved = true;
             }
+        };
 
-            const marker = new maplibregl.Marker({ draggable: true })
-                .setLngLat([lng, lat])
-                .addTo(mapRef.current!)
+        const error = (err: { message: any }) => {
+            toast.error("Unable to retrieve your location: " + err.message);
+        };
 
-            markerRef.current = marker
+        // 🚀 STEP 1: Fast location (quick but less accurate)
+        navigator.geolocation.getCurrentPosition(success, error, {
+            enableHighAccuracy: false,
+            timeout: 15000,
+            maximumAge: 60000
+        });
 
-            onLocationSelect(lat, lng)
+        // 🚀 STEP 2: High accuracy continuous tracking (refines location)
+        const watchId = navigator.geolocation.watchPosition(success, error, {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0
+        });
 
-        })
-    }
+        // ⛔ Stop watching after few seconds (performance save)
+        setTimeout(() => {
+            navigator.geolocation.clearWatch(watchId);
+        }, 10000);
+    };
 
     // Search location
     const handleSearch = async () => {
@@ -139,7 +177,7 @@ export default function IssueLocationMap({ onLocationSelect }: Props) {
             <Button
                 type="button"
                 onClick={handleCurrentLocation}
-                className="absolute top-3 left-3 z-10  px-3 py-1 rounded-md shadow text-sm cursor-pointer"
+                className="absolute bottom-3 left-3 z-10  px-3 py-1 rounded-md shadow text-sm cursor-pointer"
             >
                 <LocateFixed className="dark:text-foreground" />
             </Button>
