@@ -78,7 +78,7 @@ const ResolveForm = ({ onCancel, onSuccess, resolvedBy }: ResolveFormProps) => {
                 </Field>
                 {/* Image upload */}
                 <Field>
-                    <FieldLabel className='mb-6'>Upload Images that Justify Resolution (Optional)</FieldLabel>
+                    <FieldLabel className='mb-6'>Upload Images that Justify Resolution</FieldLabel>
 
                     <ImageUpload
                         onChange={(urls) => {
