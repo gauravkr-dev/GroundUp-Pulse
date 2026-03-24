@@ -1,8 +1,6 @@
 # GroundUp Pulse
 
-Empowering citizens to report civic issues — AI-verified, prioritized, and routed to the right authority.
-
-Short tagline: Make cities safer and cleaner by turning reports into action.
+GroundUp Pulse connects citizens with authorities for faster issue resolution.
 
 ## Description
 
@@ -42,11 +40,11 @@ GroundUp Pulse is a full-stack, AI-powered civic issue reporting platform that e
 
 - Frontend: Next.js, React, Tailwind CSS
 - Backend: Node.js, tRPC (type-safe APIs)
-- Database: PostgreSQL (recommended; placeholder — replace as needed)
-- Realtime: WebSockets / socket.io (or Next.js-specific solutions)
-- AI Integration: Gemini API (or other multimodal LLMs)
-- Authentication: NextAuth.js or JWT-based auth (configurable)
-- Optional: Redis for caching & deduplication heuristics, S3-compatible storage for images
+- Database: Drizzle ORM (with Neon)
+- Realtime: socket.io
+- AI Integration: Gemini API
+- Authentication: Better Auth
+- Optional: UploadThing (storage for images) and MapTiler Map (for location)
 
 ## 📸 Screenshots / Demo
 
@@ -57,65 +55,6 @@ GroundUp Pulse is a full-stack, AI-powered civic issue reporting platform that e
 
 _Add screenshots, GIFs, or a hosted demo link here._
 
-## ⚙️ Installation & Setup
-
-1. Clone repository
-
-```bash
-git clone https://github.com/your-org/groundup-pulse.git
-cd groundup-pulse
-```
-
-1. Install dependencies
-
-```bash
-npm install
-# or
-pnpm install
-# or
-yarn
-```
-
-1. Environment variables (create a `.env.local`)
-
-```
-NEXT_PUBLIC_API_URL=http://localhost:3000
-DATABASE_URL=postgres://user:pass@localhost:5432/groundup
-GEMINI_API_KEY=your_gemini_api_key
-NEXTAUTH_SECRET=your_nextauth_secret
-JWT_SECRET=your_jwt_secret
-SOCKET_SERVER_URL=ws://localhost:4000
-```
-
-1. Database setup (example using Prisma)
-
-```bash
-npx prisma migrate dev --name init
-npx prisma db seed
-```
-
-1. Run development servers
-
-```bash
-# Start Next.js frontend + backend
-npm run dev
-
-# If using a separate socket server (optional):
-cd socket-server
-npm install
-node socket.js
-```
-
-1. Production
-
-- Build and start:
-
-```bash
-npm run build
-npm run start
-```
-
-- Use managed DBs, CDN for images, and secure environment variable storage in production.
 
 ## 📁 Folder Structure (overview)
 
@@ -137,11 +76,66 @@ npm run start
 └─ README.md
 ```
 
-## 🔐 Authentication & Privacy
+## ⚙️ Installation & Setup
 
-- Support for authenticated users (citizens & authority officers). Implement RBAC (roles: `citizen`, `officer`, `admin`).
-- Store only the minimum necessary personal data. Secure images and PII in transit and at rest (TLS + encrypted storage).
-- Follow local and regional data protection regulations when deployed.
+1. Clone repository
+
+```bash
+git clone https://github.com/your-org/groundup-pulse.git
+cd groundup-pulse
+```
+
+1. Install dependencies
+
+```bash
+npm install
+```
+
+1. Environment variables (create a `.env.local`)
+
+```
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+BETTER_AUTH_SECRET=
+BETTER_AUTH_URL="http://localhost:3000"
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+NEXT_PUBLIC_MAPTILER_API_KEY=
+UPLOADTHING_TOKEN=
+DATABASE_URL=postgres://user:pass@localhost:5432/groundup
+GEMINI_API_KEY=your_gemini_api_key
+
+```
+
+1. Database setup (example using Prisma)
+
+```
+# push schema (drizzle-kit)
+npm run db:push
+
+# optional: open drizzle studio
+npm run db:studio
+```
+
+1. Run development servers
+
+- `dev` — Start Next.js in development mode (`next dev`)
+- `build` — Build the Next.js app (`next build`)
+- `start` — Start production server (`next start`)
+- `lint` — Run ESLint (`eslint`)
+- `db:studio` — Start `drizzle-kit studio` (database GUI)
+- `db:push` — Push schema changes using `drizzle-kit push`
+
+
+```bash
+# Start Next.js frontend + backend
+npm run dev
+
+# If using a separate socket server (optional):
+cd socket-server
+npm install
+node socket.js
+```
+
 
 ## 🧭 Why this project matters
 
@@ -150,63 +144,8 @@ npm run start
 - Encourages civic participation by rewarding contributors and providing visibility on impact.
 - Enables data-driven urban maintenance and better allocation of public resources.
 
-## 🤝 Contributing
-
-- Fork the repo and create a feature branch (`feature/your-feature`).
-- Open a PR describing the change and link related issues.
-- Keep PRs small and focused; include tests for new logic (verification, dedupe, scoring).
-- Follow code style (Prettier/ESLint) and keep commits atomic.
-- For major features, open an issue first to discuss design and API changes.
-
-## 🔮 Future Improvements
-
-- Multi-language support for descriptions and UI.
-- On-device pre-filtering/inference for faster verification and improved privacy.
-- Integration with municipal ticketing systems and public dashboards.
-- Model lifecycle tools: offline retraining pipelines and human-in-the-loop labeling UI.
-- Advanced analytics: heatmaps, trend detection, and municipal performance metrics.
-- Mobile-first enhancements and offline reporting support.
-
-## 📜 License
-
-This project is available under the MIT License. Replace with your preferred license if needed.
-
-## 🙌 Acknowledgements
-
-- Thanks to open-source libraries and the civic tech community.
-- AI model providers for multimodal analysis and embeddings.
-- Contributors, testers, and pilot municipal partners.
-
 ---
 
-If you want, I can:
-
-- generate example `.env` and `prisma/schema.prisma` files,
-- draft seed data and test scripts,
-- or create a sample screenshot gallery for this README.
-
-Which would you like next?
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More
 
