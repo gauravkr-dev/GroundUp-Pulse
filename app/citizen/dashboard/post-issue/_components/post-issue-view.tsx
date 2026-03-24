@@ -73,7 +73,7 @@ const IssueStatusModal = ({ type, message, onAction }: IssueStatusModalProps) =>
                     <p className="text-sm text-muted-foreground mb-6">{message}</p>
                 </div>
                 <div className="flex justify-end gap-2">
-                    <Button type="button" variant={"outline"} onClick={onAction} className={` rounded cursor-pointer ${type === "success" ? "border-green-500 text-green-500 hover:bg-green-500/10 dark:hover:bg-green-500/10" : type === "duplicate" ? "border-yellow-500 text-yellow-500 hover:bg-yellow-500/10 dark:hover:bg-yellow-500/10" : "border-red-500 text-red-500 hover:bg-red-500/10 dark:hover:bg-red-500/10"} text-white`}>
+                    <Button type="button" variant={"outline"} onClick={onAction} className={` rounded cursor-pointer ${type === "success" ? "border-green-500 text-green-500 hover:bg-green-500/10 dark:hover:bg-green-500/10" : type === "duplicate" ? "border-yellow-500 text-yellow-500 hover:bg-yellow-500/10 dark:hover:bg-yellow-500/10" : "border-red-500 text-red-500 hover:bg-red-500/10 dark:hover:bg-red-500/10"}`}>
                         {type === "success" ? "Go to Dashboard" : type === "duplicate" ? "Go to Dashboard" : "Okay"}
                     </Button>
                 </div>

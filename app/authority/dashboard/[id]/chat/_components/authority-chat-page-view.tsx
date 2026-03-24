@@ -108,13 +108,17 @@ export default function AuthorityChat({ issueId }: AuthorityChatProps) {
     }, [issueId, updateMessageStatusMutation]);
 
     // Function to send a message
+
     const sendMessage = async () => {
+        const trimmedText = text.trim();
+
+        // ❗ MAIN VALIDATION
+        if (!trimmedText && !image) return;
 
         try {
-
             const saved = await sendMessageMutation.mutateAsync({
                 issueId,
-                text: text.trim() || undefined,
+                text: trimmedText || undefined,
                 imageUrl: image ?? undefined,
             });
 
@@ -139,8 +143,8 @@ export default function AuthorityChat({ issueId }: AuthorityChatProps) {
         } catch (err) {
             console.error(err);
         }
-
     };
+
 
     // Listen for message delivery status updates
     useEffect(() => {
@@ -334,6 +338,12 @@ export default function AuthorityChat({ issueId }: AuthorityChatProps) {
                                 placeholder="Reply to the authority..."
                                 value={text}
                                 onChange={(e) => setText(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                        e.preventDefault();
+                                        sendMessage();
+                                    }
+                                }}
                                 className="resize-none outline-none bg-transparent text-sm rounded-md placeholder:text-gray-400 py-4 px-4"
                             />
                             <div className="flex justify-between items-center w-full">

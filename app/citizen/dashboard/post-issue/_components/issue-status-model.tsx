@@ -78,7 +78,7 @@ export const IssueStatusModal = ({
                 <div className="mt-6 flex justify-center">
                     <button
                         onClick={current.action}
-                        className={`px-4 py-2 text-white rounded-md ${current.color}`}
+                        className={`px-4 py-2 rounded-md ${current.color}`}
                     >
                         {current.buttonText}
                     </button>
