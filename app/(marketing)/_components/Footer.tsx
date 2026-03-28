@@ -68,7 +68,7 @@ export function Footer() {
                     <a
                         aria-label="x/twitter"
                         className="inline-flex items-center gap-1 text-foreground/80 hover:text-foreground hover:underline"
-                        href={"https://portfolio-silk-rho-58.vercel.app/"}
+                        href={"https://gauravkr-dev.vercel.app/"}
                         rel="noreferrer"
                         target="_blank"
                     >
