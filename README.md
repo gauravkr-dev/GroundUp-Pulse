@@ -12,7 +12,7 @@ GroundUp Pulse is a full-stack, AI-powered civic issue reporting platform that e
 
 ## Video Demo
 
-- https://youtu.be/fBqEaK99kx0
+- https://youtu.be/hOGrGkayyps
 
 ## 🚀 Features
 
