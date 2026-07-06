@@ -14,12 +14,12 @@ const navLinks = [
 
 const socialLinks = [
     {
-        href: "https://www.linkedin.com/in/gaurav474/",
+        href: "https://www.linkedin.com/in/gauravkr474/",
         label: "LinkedIn",
         icon: <Linkedin />,
     },
     {
-        href: "https://github.com/gauravkr-dev",
+        href: "https://github.com/gauravkr474",
         label: "Github",
         icon: (
             <GithubIcon
@@ -30,7 +30,7 @@ const socialLinks = [
 
 export function Footer() {
     return (
-        <footer className="px-4 md:px-24">
+        <footer className="px-4">
             <div className="flex flex-col gap-4 py-6">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -68,7 +68,7 @@ export function Footer() {
                     <a
                         aria-label="x/twitter"
                         className="inline-flex items-center gap-1 text-foreground/80 hover:text-foreground hover:underline"
-                        href={"https://gauravkr-dev.vercel.app/"}
+                        href={"https://gauravkr.vercel.app/"}
                         rel="noreferrer"
                         target="_blank"
                     >
