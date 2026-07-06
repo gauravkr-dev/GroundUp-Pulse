@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/lib/theme-provider";
 import { TRPCReactProvider } from "@/trpc/client";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NextTopLoader from "nextjs-toploader";
+import { Analytics } from "@vercel/analytics/next"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -38,6 +39,7 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
+              <Analytics />
               <NextTopLoader
                 color="#296BC2"
                 height={3}
