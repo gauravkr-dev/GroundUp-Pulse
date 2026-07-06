@@ -11,6 +11,7 @@ import { RoleOfAi } from './_components/RoleOfAi'
 import { FaqsSection } from './_components/FaqsSection'
 import { CallToAction } from './_components/cta'
 import HowItWorks from './_components/HowItWorks'
+import SmoothScroll from '@/components/smooth-scroll'
 // import { FaqsSection } from './_components/FaqsSection'
 
 const page = async () => {
@@ -27,6 +28,7 @@ const page = async () => {
 
   return (
     <div>
+      <SmoothScroll />
       <Navbar />
       <Hero />
       <CitizenSection />

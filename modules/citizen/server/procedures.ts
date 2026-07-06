@@ -103,7 +103,6 @@ export const postIssueRouter = createTRPCRouter({
                     issue.latitude,
                     issue.longitude
                 );
-
                 // ✅ VERY CLOSE → DIRECT DUPLICATE
                 if (distance < 50) {
                     // SAME USER CHECK
